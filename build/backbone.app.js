@@ -143,7 +143,7 @@
 			"click a[rel='external']" : "clickExternal"
 		},
 		initialize: function(){
-			_.bindAll(this, 'render'); 
+			_.bindAll(this, 'render', 'clickExternal'); 
 			// find the data
 			this.data = this.model || this.collection;
 			//
@@ -172,11 +172,27 @@
 			}
 		}, 
 		clickExternal: function(e){
-			window.open($(e.target).attr("href"), '_blank'); return false; 
+			e.preventDefault();
+			var url = this.findLink(e.target);
+			// track the click with Google Analytics (if available)
+			if( !_.isUndefined(pageTracker) ) url = pageTracker._getLinkerUrl(url);
+			window.open(url, '_blank'); 
+			return false; 
+		},
+		findLink: function (obj) {
+			if (obj.tagName != "A") {
+				return $(obj).closest("a").attr("href");
+			} else {
+				return $(obj).attr("href");
+			}
 		}
 	});
 	
 	Router = Backbone.Router.extend({
+		initialize: function(){
+			// include this in your router if using Google Analytics
+			// this.bind('all', this._trackPageview);
+		}, 
 		// Save app state in a seperate object
 		state: {
 			fullscreen: false, 
@@ -186,6 +202,10 @@
 							if(/(iPhone|iPod).*OS 5.*AppleWebKit.*Mobile.*Safari/.test(navigator.userAgent) ) return 'ios';
 							return 'other';
 						}
+		}, 
+		_trackPageview: function(){ 
+			var url = Backbone.history.getFragment();
+			if( !_.isUndefined( _gaq ) ) _gaq.push(['_trackPageview', "/#"+url]);
 		}
 		
 	});
