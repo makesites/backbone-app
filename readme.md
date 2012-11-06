@@ -11,7 +11,7 @@ Find the compilled library in the "build/" folder. Choose between the uncompress
 To build the library simply load the npm dependencies and execute the **build.js** with node: 
 ```
 npm install
-npde build.js
+node build.js
 ```
 
 The build script will combine the contents of the "lib/" folder and output the compiled library in the "build/" folder.
