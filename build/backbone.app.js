@@ -1,3 +1,8 @@
+/**@license
+ * backbone.app <>
+ * Version: 0.6.0 (Tue, 06 Nov 2012 21:10:06 GMT)
+ * License: 
+ */
 (function(_, Backbone) {
 	
 	// App contructor
@@ -6,7 +11,7 @@
 		// check URIs
 		var path = window.location.pathname.split( '/' );
 		// find a router based on the path
-		for( i in path ){
+		for(var i in path ){
 			// discart the first item if it's empty
 			if( path[i] === "") continue;
 			router = (path[i].charAt(0).toUpperCase() + path[i].slice(1));
@@ -17,7 +22,7 @@
 		var controller = (router && APP.Routers[router]) ? new APP.Routers[router]() : new APP.Routers.Default();
 		// return controller so it's accessible through the app global
 		return controller;
-	}
+	};
 	
 	// Namespace definition
 	APP.Models = {};
@@ -26,7 +31,20 @@
 	APP.Views = {};
 	APP.Templates = {};
 	
-  	// **Main constructors**
+	
+})(this._, this.Backbone);
+(function(_, Backbone, $) {
+	
+	// Helpers
+	// this is to enable  syntax to simple _.template() calls
+	_.templateSettings = {
+		interpolate : /\{\{(.+?)\}\}/g
+	};
+	
+})(this._, this.Backbone, this.jQuery);
+(function(_, Backbone) {
+	
+	// **Main constructors**
 	Model = Backbone.Model.extend({
 		// cache all data to localstorage 
 		cache: function(){
@@ -42,20 +60,20 @@
 		sync : function(method, model, options) {
 			var methodMap = { 'create': 'POST', 'update': 'PUT', 'delete': 'DELETE', 'read':   'GET' };
 			var type = methodMap[method];
-			options || (options = {});
+			var opt = options || (options = {});
 			var params = {type: type, dataType: 'json', data: {}};
 			
 			if (!options.url) {
-			  params.url = this.getValue(model, 'url') || urlError();
+				params.url = this.getValue(model, 'url') || urlError();
 			}
 			
 			if (!options.data && model && (method == 'create' || method == 'update')) {
-			  params.contentType = 'application/json';
-			  params.data = JSON.stringify(model.toJSON());
+				params.contentType = 'application/json';
+				params.data = JSON.stringify(model.toJSON());
 			}
 			
 			if (params.type !== 'GET' && !Backbone.emulateJSON) {
-			  params.processData = false;
+				params.processData = false;
 			}
 			
 			return $.ajax(_.extend(params, options));
@@ -67,7 +85,10 @@
 		}
 	});
 	
-  	Collection = Backbone.Collection.extend({
+})(this._, this.Backbone);
+(function(_, Backbone) {
+	
+	Collection = Backbone.Collection.extend({
 		// initialization (if not overriden)
 		initialize: function(models, options){
 			// save options for later
@@ -104,10 +125,10 @@
 					this.set(model);
 				}
 			}, this);
-		  
+			
 			// finally convert list to an array
 			modelsToAdd = _.toArray( modelsToAdd );
-		  
+			
 			return Backbone.Collection.prototype.add.call(this, modelsToAdd, options);
 		},
 		// a custom set() method to merge with existing models
@@ -123,7 +144,7 @@
 		// Helper functions
 		// - set an attribute
 		setAttr: function( attr ) {
-			for( key in attr ){ 
+			for(var key in attr ){ 
 				this.attributes[key] = attr[key];
 			}        
 		}, 
@@ -137,6 +158,9 @@
 		}
 	});
 	
+})(this._, this.Backbone);
+(function(_, Backbone, $) {
+	
 	View =  Backbone.View.extend({
 		// events
 		events: {
@@ -148,7 +172,7 @@
 			this.data = this.model || this.collection;
 			//
 			//_.extend({name : 'moe'}, {age : 50});
-			this.options.type || (this.options.type = "default");
+			if( ! this.options.type ) this.options.type = "default";
 			// compile
 			var html = this.options.html || null;
 			var options = {};
@@ -188,27 +212,8 @@
 		}
 	});
 	
-	Router = Backbone.Router.extend({
-		initialize: function(){
-			// include this in your router if using Google Analytics
-			// this.bind('all', this._trackPageview);
-		}, 
-		// Save app state in a seperate object
-		state: {
-			fullscreen: false, 
-			online: navigator.onLine,
-			browser: function(){ 
-							if( $.browser.safari && /chrome/.test(navigator.userAgent.toLowerCase()) ) return 'chrome';
-							if(/(iPhone|iPod).*OS 5.*AppleWebKit.*Mobile.*Safari/.test(navigator.userAgent) ) return 'ios';
-							return 'other';
-						}
-		}, 
-		_trackPageview: function(){ 
-			var url = Backbone.history.getFragment();
-			if( !_.isUndefined( _gaq ) ) _gaq.push(['_trackPageview', "/#"+url]);
-		}
-		
-	});
+})(this._, this.Backbone, this.jQuery);
+(function(_, Backbone, $) {
 	
 	Template = Backbone.Model.extend({
 		initialize: function(html, options){
@@ -249,12 +254,29 @@
 		}
 	});
 	
+})(this._, this.Backbone, this.jQuery);
+(function(_, Backbone) {
 	
-	// Helpers
-	// this is to enable {{moustache}} syntax to simple _.template() calls
-	_.templateSettings = {
-		interpolate : /\{\{(.+?)\}\}/g
-	};
-	
+	Router = Backbone.Router.extend({
+		initialize: function(){
+			// include this in your router if using Google Analytics
+			// this.bind('all', this._trackPageview);
+		}, 
+		// Save app state in a seperate object
+		state: {
+			fullscreen: false, 
+			online: navigator.onLine,
+			browser: function(){ 
+							if( $.browser.safari && /chrome/.test(navigator.userAgent.toLowerCase()) ) return 'chrome';
+							if(/(iPhone|iPod).*OS 5.*AppleWebKit.*Mobile.*Safari/.test(navigator.userAgent) ) return 'ios';
+							return 'other';
+						}
+		}, 
+		_trackPageview: function(){ 
+			var url = Backbone.history.getFragment();
+			if( !_.isUndefined( _gaq ) ) _gaq.push(['_trackPageview', "/#"+url]);
+		}
+		
+	});
 	
 })(this._, this.Backbone);

@@ -1,0 +1,20 @@
+{
+    "private" : true,
+    "name" : "backbone.app",
+    "version" : "0.6.0",
+    "devDependencies" : {
+        "commander" : "~0.5",
+		"jshint" : "~0.9",
+        "uglify-js2" : "~2.1",
+		"hbs" : "~1.0"
+    },
+    "engine" : {
+        "node" : "0.8.x"
+    }, 
+  "licenses": [
+    {
+      "type": "Apache License, Version 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ]
+}
