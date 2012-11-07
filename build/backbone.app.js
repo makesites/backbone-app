@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.6.0 (Tue, 06 Nov 2012 21:10:06 GMT)
+ * Version: 0.6.0 (Wed, 07 Nov 2012 01:30:23 GMT)
  * License: 
  */
 (function(_, Backbone) {
@@ -190,9 +190,14 @@
 		render: function(){
 			var type = this.options.type;
 			var template = this.template.get(type);
-			if( !_.isUndefined( template ) ) { 
-				var html = template( this.data.toJSON() );
-				$(this.el).html( html );
+			var data = this.data.toJSON();
+			if( !_.isUndefined( template ) && !_.isEmpty( data ) ) { 
+				var html = template( data );
+                if( this.options.append ){
+					$(this.el).append( html );
+                } else {
+					$(this.el).html( html );
+                }
 			}
 		}, 
 		clickExternal: function(e){
