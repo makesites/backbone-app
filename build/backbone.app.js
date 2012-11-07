@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.6.0 (Wed, 07 Nov 2012 01:30:23 GMT)
+ * Version: 0.6.0 (Wed, 07 Nov 2012 03:36:18 GMT)
  * License: 
  */
 (function(_, Backbone) {
@@ -200,6 +200,15 @@
                 }
 			}
 		}, 
+		// a more descreete way of binding events triggers to objects
+        listen : function( obj, event, callback ){
+            // adds event listeners to the data
+            var e = ( typeof event == "string")? [event] : event;
+            for( var i in e ){
+                obj.bind(e[i], callback);
+            }
+            
+        }, 
 		clickExternal: function(e){
 			e.preventDefault();
 			var url = this.findLink(e.target);
