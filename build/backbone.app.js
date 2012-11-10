@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.6.0 (Wed, 07 Nov 2012 03:36:18 GMT)
+ * Version: 0.6.0 (Sat, 10 Nov 2012 08:14:59 GMT)
  * License: 
  */
 (function(_, Backbone) {
@@ -169,7 +169,7 @@
 		initialize: function(){
 			_.bindAll(this, 'render', 'clickExternal'); 
 			// find the data
-			this.data = this.model || this.collection;
+			this.data = this.model || this.collection || null;
 			//
 			//_.extend({name : 'moe'}, {age : 50});
 			if( ! this.options.type ) this.options.type = "default";
@@ -180,18 +180,20 @@
 			this.template = new Template(html, options);
 			this.template.bind("loaded", this.render);
 			// add listeners
-			this.data.bind("change", this.render);
-			this.data.bind("reset", this.render);
-			this.data.bind("add", this.render);
-			this.data.bind("remove", this.render);
+            if( !_.isNull( this.data ) ){
+                this.data.bind("change", this.render);
+                this.data.bind("reset", this.render);
+                this.data.bind("add", this.render);
+                this.data.bind("remove", this.render);
+            }
 			// initial render
 			this.render();
 		},
 		render: function(){
 			var type = this.options.type;
 			var template = this.template.get(type);
-			var data = this.data.toJSON();
-			if( !_.isUndefined( template ) && !_.isEmpty( data ) ) { 
+			var data = ( _.isNull(this.data) ) ? {} : this.data.toJSON();
+			if( !_.isUndefined( template ) ) { 
 				var html = template( data );
                 if( this.options.append ){
 					$(this.el).append( html );
@@ -216,7 +218,7 @@
 			if( !_.isUndefined(pageTracker) ) url = pageTracker._getLinkerUrl(url);
 			window.open(url, '_blank'); 
 			return false; 
-		},
+		}, 
 		findLink: function (obj) {
 			if (obj.tagName != "A") {
 				return $(obj).closest("a").attr("href");
