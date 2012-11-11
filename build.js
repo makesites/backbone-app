@@ -30,7 +30,7 @@ concat({
 lint('build/backbone.app.js', function(){
     
 	// - Create / save minified file
-	uglify('build/backbone.app.js', 'build/backbone.app.min.js');
+	uglify('build/backbone.app.js', 'build/backbone.app-min.js');
 
 });
 

@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.6.0 (Sat, 10 Nov 2012 08:14:59 GMT)
+ * Version: 0.6.0 (Sun, 11 Nov 2012 02:16:59 GMT)
  * License: 
  */
 (function(_, Backbone) {
