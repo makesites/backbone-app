@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.6.0 (Sun, 11 Nov 2012 02:16:59 GMT)
+ * Version: 0.6.0 (Mon, 12 Nov 2012 02:03:37 GMT)
  * License: 
  */
 (function(_, Backbone) {
@@ -171,8 +171,13 @@
 			// find the data
 			this.data = this.model || this.collection || null;
 			//
-			//_.extend({name : 'moe'}, {age : 50});
 			if( ! this.options.type ) this.options.type = "default";
+			// #9 optionally add a reference to the view in the container
+			if( this.options.attr ) {
+				$(this.el).attr("data-view", this.options.attr );
+			} else { 
+				$(this.el).removeAttr("data-view");
+			}
 			// compile
 			var html = this.options.html || null;
 			var options = {};
@@ -234,10 +239,13 @@
 	Template = Backbone.Model.extend({
 		initialize: function(html, options){
 			_.bindAll(this, 'fetch','parse'); 
+			// fallback for options
+			var opt = options || (options={});
 			if( !_.isEmpty(html) ){
 				this.set( "default", this.compile( html ) );
 				this.trigger("loaded");
 			}
+			//if( !_.isUndefined( options.url ) && !_.isEmpty( options.url ) ){
 			if( options.url ){
 				this.url = options.url;
 				this.fetch();
