@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.6.0 (Mon, 12 Nov 2012 02:03:37 GMT)
+ * Version: 0.6.0 (Thu, 22 Nov 2012 12:07:04 GMT)
  * License: 
  */
 (function(_, Backbone) {
@@ -85,6 +85,22 @@
 		}
 	});
 	
+	
+	// *** Extensions ***
+	
+	MongoModel = Model.extend({
+		
+		parse: function( data ){
+			//console.log(data);
+			// "normalize" result with proper ids
+			if(data._id){
+				data.id = data._id;
+				delete data._id;
+			}
+			return data;
+		}
+	});
+	
 })(this._, this.Backbone);
 (function(_, Backbone) {
 	
@@ -158,6 +174,21 @@
 		}
 	});
 	
+	
+	// *** Extensions ***
+	
+	MongoCollection = Collection.extend({
+		
+		parse: function( data ){
+			//console.log(data);
+			// "normalize" result with proper ids
+			for(var i in data){
+				data[i].id = data[i]._id;
+				delete data[i]._id;
+			}
+			return data;
+		}
+	});
 })(this._, this.Backbone);
 (function(_, Backbone, $) {
 	

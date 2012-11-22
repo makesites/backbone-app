@@ -4,7 +4,7 @@ An APP for your client app using simple conventions in Backbone.js
 
 ## Usage 
 
-Find the compilled library in the "build/" folder. Choose between the uncompressed and comment annotated **backbone.app.js** and the minified **backbone.app.min.js** 
+Find the compilled library in the "build/" folder. Choose between the uncompressed and comment annotated **backbone.app.js** and the minified **backbone.app-min.js** 
 
 ## Build
 
