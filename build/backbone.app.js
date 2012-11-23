@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.6.0 (Thu, 22 Nov 2012 12:07:04 GMT)
+ * Version: 0.6.0 (Fri, 23 Nov 2012 00:40:08 GMT)
  * License: 
  */
 (function(_, Backbone) {
@@ -222,8 +222,10 @@
                 this.data.bind("add", this.render);
                 this.data.bind("remove", this.render);
             }
-			// initial render
-			this.render();
+			// #11 : initial render only if data is not empty
+			if( !_.isEmpty(this.data.toJSON()) ){ 
+				this.render();
+			}
 		},
 		render: function(){
 			var type = this.options.type;
