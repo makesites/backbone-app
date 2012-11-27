@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.6.0 (Fri, 23 Nov 2012 00:40:08 GMT)
+ * Version: 0.6.0 (Tue, 27 Nov 2012 10:19:36 GMT)
  * License: 
  */
 (function(_, Backbone) {
@@ -198,6 +198,9 @@
 			"click a[rel='external']" : "clickExternal"
 		},
 		initialize: function(){
+			// #12 : unbind this container from any previous listeners
+			$(this.el).unbind();
+			//
 			_.bindAll(this, 'render', 'clickExternal'); 
 			// find the data
 			this.data = this.model || this.collection || null;
@@ -223,11 +226,14 @@
                 this.data.bind("remove", this.render);
             }
 			// #11 : initial render only if data is not empty
-			if( !_.isEmpty(this.data.toJSON()) ){ 
+			if( !_.isNull( this.data ) && !_.isEmpty(this.data.toJSON()) ){ 
 				this.render();
 			}
 		},
 		render: function(){
+			// execute pre-render actions
+			if( !_.isUndefined(this.preRender) ) this.preRender();
+			// 
 			var type = this.options.type;
 			var template = this.template.get(type);
 			var data = ( _.isNull(this.data) ) ? {} : this.data.toJSON();
@@ -239,6 +245,8 @@
 					$(this.el).html( html );
                 }
 			}
+			// execute post-render actions
+			if( !_.isUndefined(this.postRender) ) this.postRender();
 		}, 
 		// a more descreete way of binding events triggers to objects
         listen : function( obj, event, callback ){
