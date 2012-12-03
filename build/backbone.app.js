@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.7.0 (Tue, 27 Nov 2012 10:24:42 GMT)
+ * Version: 0.7.0 (Mon, 03 Dec 2012 10:11:49 GMT)
  * License: 
  */
 (function(_, Backbone) {
@@ -201,7 +201,7 @@
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
 			//
-			_.bindAll(this, 'render', 'clickExternal'); 
+			_.bindAll(this, 'render', 'clickExternal', 'postRender'); 
 			// find the data
 			this.data = this.model || this.collection || null;
 			//
@@ -247,6 +247,10 @@
 			}
 			// execute post-render actions
 			if( !_.isUndefined(this.postRender) ) this.postRender();
+		}, 
+		postRender: function(){
+			// make sure the container is presented
+			$(this.el).show();
 		}, 
 		// a more descreete way of binding events triggers to objects
         listen : function( obj, event, callback ){
