@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.7.0 (Mon, 03 Dec 2012 10:11:49 GMT)
+ * Version: 0.7.0 (Fri, 07 Dec 2012 00:14:55 GMT)
  * License: 
  */
 (function(_, Backbone) {
@@ -339,7 +339,8 @@
 							if( $.browser.safari && /chrome/.test(navigator.userAgent.toLowerCase()) ) return 'chrome';
 							if(/(iPhone|iPod).*OS 5.*AppleWebKit.*Mobile.*Safari/.test(navigator.userAgent) ) return 'ios';
 							return 'other';
-						}
+						},
+			touch : ('ontouchstart' in document.documentElement)
 		}, 
 		_trackPageview: function(){ 
 			var url = Backbone.history.getFragment();
