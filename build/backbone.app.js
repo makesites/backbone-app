@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.7.0 (Fri, 07 Dec 2012 04:04:37 GMT)
+ * Version: 0.7.0 (Fri, 07 Dec 2012 04:21:13 GMT)
  * License: 
  */
 (function(_, Backbone) {
@@ -29,6 +29,7 @@
 	APP.Routers = {};
 	APP.Collections = {};
 	APP.Views = {};
+	APP.Layouts = {};
 	APP.Templates = {};
 	
 	
@@ -276,6 +277,16 @@
 			} else {
 				return $(obj).attr("href");
 			}
+		}
+	});
+	
+})(this._, this.Backbone, this.jQuery);
+(function(_, Backbone, $) {
+	
+	/* Main layout */
+	APP.Layout = Backbone.View.extend({
+		initialize: function(){
+			//_.bindAll(this); 
 		}
 	});
 	

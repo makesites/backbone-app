@@ -14,13 +14,14 @@ var _cli = require('commander'),
  // - concatinate all files
 concat({
     src : [
-        'lib/app._construct.js',
-        'lib/app.helpers.js',
-        'lib/app.model.js',
-        'lib/app.collection.js',
-        'lib/app.view.js',
-        'lib/app.template.js',
-        'lib/app.router.js'
+		'lib/app._construct.js',
+		'lib/app.helpers.js',
+		'lib/app.model.js',
+		'lib/app.collection.js',
+		'lib/app.view.js',
+		'lib/app.layout.js',
+		'lib/app.template.js',
+		'lib/app.router.js'
     ],
     dest : 'build/backbone.app.js'
 });
