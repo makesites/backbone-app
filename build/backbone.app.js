@@ -1,6 +1,6 @@
 /**@license
  * backbone.app <>
- * Version: 0.7.0 (Fri, 07 Dec 2012 00:14:55 GMT)
+ * Version: 0.7.0 (Fri, 07 Dec 2012 04:04:37 GMT)
  * License: 
  */
 (function(_, Backbone) {
@@ -45,7 +45,7 @@
 (function(_, Backbone) {
 	
 	// **Main constructors**
-	Model = Backbone.Model.extend({
+	APP.Model = Backbone.Model.extend({
 		// cache all data to localstorage 
 		cache: function(){
 			// construct a cache mechanism, using localstorage or other...
@@ -88,7 +88,7 @@
 	
 	// *** Extensions ***
 	
-	MongoModel = Model.extend({
+	MongoModel = APP.Model.extend({
 		
 		parse: function( data ){
 			//console.log(data);
@@ -104,7 +104,7 @@
 })(this._, this.Backbone);
 (function(_, Backbone) {
 	
-	Collection = Backbone.Collection.extend({
+	APP.Collection = Backbone.Collection.extend({
 		// initialization (if not overriden)
 		initialize: function(models, options){
 			// save options for later
@@ -177,7 +177,7 @@
 	
 	// *** Extensions ***
 	
-	MongoCollection = Collection.extend({
+	MongoCollection = APP.Collection.extend({
 		
 		parse: function( data ){
 			//console.log(data);
@@ -189,10 +189,11 @@
 			return data;
 		}
 	});
+	
 })(this._, this.Backbone);
 (function(_, Backbone, $) {
 	
-	View =  Backbone.View.extend({
+	APP.View =  Backbone.View.extend({
 		// events
 		events: {
 			"click a[rel='external']" : "clickExternal"
@@ -281,7 +282,7 @@
 })(this._, this.Backbone, this.jQuery);
 (function(_, Backbone, $) {
 	
-	Template = Backbone.Model.extend({
+	APP.Template = Backbone.Model.extend({
 		initialize: function(html, options){
 			_.bindAll(this, 'fetch','parse'); 
 			// fallback for options
@@ -326,7 +327,7 @@
 })(this._, this.Backbone, this.jQuery);
 (function(_, Backbone) {
 	
-	Router = Backbone.Router.extend({
+	APP.Router = Backbone.Router.extend({
 		initialize: function(){
 			// include this in your router if using Google Analytics
 			// this.bind('all', this._trackPageview);
