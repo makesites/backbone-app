@@ -1,9 +1,11 @@
 /**@license
  * backbone.app <>
- * Version: 0.7.0 (Fri, 07 Dec 2012 04:21:13 GMT)
+ * Version: 0.7.0 (Wed, 02 Jan 2013 15:44:57 GMT)
  * License: 
  */
-(function(_, Backbone) {
+ 
+ // stop processing if APP is already part of the namespace
+window.APP || (function(_, Backbone) {
 	
 	// App contructor
 	APP = function(){
@@ -285,8 +287,14 @@
 	
 	/* Main layout */
 	APP.Layout = Backbone.View.extend({
+		// events
+		events: {},
 		initialize: function(){
+			// #12 : unbind this container from any previous listeners
+			$(this.el).unbind();
+			// bind event to this object
 			//_.bindAll(this); 
+			
 		}
 	});
 	
