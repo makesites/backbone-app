@@ -1,6 +1,6 @@
 /**@license
- * backbone.app <>
- * Version: 0.8.1 (Wed, 02 Jan 2013 15:53:53 GMT)
+ * backbone-app <>
+ * Version: 0.8.2 (Wed, 02 Jan 2013 16:06:06 GMT)
  * License: 
  */
  
