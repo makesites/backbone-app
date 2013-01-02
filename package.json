@@ -1,6 +1,6 @@
 {
     "private" : true,
-    "name" : "backbone.app",
+    "name" : "backbone-app",
     "version" : "0.8.1",
     "devDependencies" : {
         "commander" : "~0.5",
