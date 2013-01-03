@@ -1,6 +1,6 @@
 /**@license
  * backbone-app <>
- * Version: 0.8.2 (Wed, 02 Jan 2013 16:06:06 GMT)
+ * Version: 0.8.2 (Thu, 03 Jan 2013 02:10:43 GMT)
  * License: 
  */
  
@@ -220,7 +220,7 @@ window.APP || (function(_, Backbone) {
 			var html = this.options.html || null;
 			var options = {};
 			if(this.options.url) options.url = this.options.url;
-			this.template = new Template(html, options);
+			this.template = new APP.Template(html, options);
 			this.template.bind("loaded", this.render);
 			// add listeners
             if( !_.isNull( this.data ) ){
