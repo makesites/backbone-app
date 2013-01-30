@@ -1,11 +1,11 @@
 /**@license
  * backbone-app <>
- * Version: 0.8.2 (Thu, 03 Jan 2013 02:10:43 GMT)
+ * Version: 0.8.3 (Wed, 30 Jan 2013 01:49:12 GMT)
  * License: 
  */
  
  // stop processing if APP is already part of the namespace
-window.APP || (function(_, Backbone) {
+var APP = window.APP || (function(_, Backbone) {
 	
 	// App contructor
 	APP = function(){
@@ -209,7 +209,7 @@ window.APP || (function(_, Backbone) {
 			// find the data
 			this.data = this.model || this.collection || null;
 			//
-			if( ! this.options.type ) this.options.type = "default";
+			if( _.isUndefined( this.options.type) ) this.options.type = "default";
 			// #9 optionally add a reference to the view in the container
 			if( this.options.attr ) {
 				$(this.el).attr("data-view", this.options.attr );
@@ -220,7 +220,9 @@ window.APP || (function(_, Backbone) {
 			var html = this.options.html || null;
 			var options = {};
 			if(this.options.url) options.url = this.options.url;
-			this.template = new APP.Template(html, options);
+			// #18 - supporting custom templates
+			var Template = (this.options.template) ? this.options.template : APP.Template;
+			this.template = new Template(html, options);
 			this.template.bind("loaded", this.render);
 			// add listeners
             if( !_.isNull( this.data ) ){
@@ -242,7 +244,8 @@ window.APP || (function(_, Backbone) {
 			var template = this.template.get(type);
 			var data = ( _.isNull(this.data) ) ? {} : this.data.toJSON();
 			if( !_.isUndefined( template ) ) { 
-				var html = template( data );
+				// #19 - checking instance of template before executing as a function
+				var html = ( template instanceof Function ) ? template( data ) : template;
                 if( this.options.append ){
 					$(this.el).append( html );
                 } else {
@@ -306,6 +309,7 @@ window.APP || (function(_, Backbone) {
 			_.bindAll(this, 'fetch','parse'); 
 			// fallback for options
 			var opt = options || (options={});
+			
 			if( !_.isEmpty(html) ){
 				this.set( "default", this.compile( html ) );
 				this.trigger("loaded");
@@ -322,7 +326,13 @@ window.APP || (function(_, Backbone) {
 		}, 
 		parse: function(data){
 			var self = this;
-			var scripts = $(data).filter("script");
+			var scripts;
+			try{
+				scripts = $(data).filter("script");
+			} catch( e){
+				// can't parse this - probly not html...
+				scripts = [];
+			}
 			// check if there are script tags 
 			if( !scripts.length ){
 				// save everything in the default attr
@@ -342,6 +352,29 @@ window.APP || (function(_, Backbone) {
 			//return data;
 		}
 	});
+	
+	
+	// *** Extensions ***
+	
+	// Supports a template written in markdown
+	// ( showdown.js assumed loaded )
+	// options: 
+	// - url : for a file containing the temaplte
+	// - html : for a string directly used as the template
+	// 
+	APP.Templates.Markdown = APP.Template.extend({
+		
+		initialize: function( html, options ){
+			
+			var showdown = new Showdown.converter();
+			
+			this.compile = showdown.makeHtml;
+			
+			return APP.Template.prototype.initialize.call( this, html, options );
+		}
+		
+	});
+	
 	
 })(this._, this.Backbone, this.jQuery);
 (function(_, Backbone) {
