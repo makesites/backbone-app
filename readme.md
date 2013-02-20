@@ -1,8 +1,30 @@
-## Backbone App()
+## Backbone APP()
 
-An APP for your client app using simple conventions in Backbone.js
+An app object for the (browser) client using common conventions for Backbone.js
 
-## Usage 
+The main purpose for this lib is to relieve you from setting up backbone.js on a  low level - allowing you to focus on the things that are unique in your product. 
+
+Among others is contains a collection of "fixes" to common solutions and provides a solid foundation to start off developing!
+
+## Features
+
+The APP() includes methods that connect it to: 
+
+* Template class
+* External html fragments
+* Google Analytics 
+* Phonegap 
+
+
+## Install
+
+Using bower:
+
+```
+bower install backbone.app
+```
+
+Direct download:  [https://github.com/makesites/backbone-app/archive/master.zip](https://github.com/makesites/backbone-app/archive/master.zip)
 
 Find the compilled library in the "build/" folder. Choose between the uncompressed and comment annotated **backbone.app.js** and the minified **backbone.app-min.js** 
 
