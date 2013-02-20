@@ -2,6 +2,8 @@
     "private" : true,
     "name" : "backbone-app",
     "version" : "0.8.3",
+	"author": "makesites",
+	"homepage" : "http://github.com/makesites/backbone-app",
     "devDependencies" : {
         "commander" : "~0.5",
 		"jshint" : "~0.9",
