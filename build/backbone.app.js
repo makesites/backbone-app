@@ -1,11 +1,13 @@
-/**@license
- * backbone-app <>
- * Version: 0.8.3 (Wed, 30 Jan 2013 01:49:12 GMT)
- * License: 
+/**
+ * @name backbone-app
+ * @author makesites
+ * Homepage: http://github.com/makesites/backbone-app
+ * Version: 0.8.4 (Wed, 20 Feb 2013 12:23:02 GMT)
+ * @license Apache License, Version 2.0
  */
  
  // stop processing if APP is already part of the namespace
-var APP = window.APP || (function(_, Backbone) {
+if( !window.APP ) (function(_, Backbone) {
 	
 	// App contructor
 	APP = function(){
@@ -272,8 +274,14 @@ var APP = window.APP || (function(_, Backbone) {
 			e.preventDefault();
 			var url = this.findLink(e.target);
 			// track the click with Google Analytics (if available)
-			if( !_.isUndefined(pageTracker) ) url = pageTracker._getLinkerUrl(url);
-			window.open(url, '_blank'); 
+			if(typeof pageTracker != "undefined") url = pageTracker._getLinkerUrl(url);
+			// #22 - Looking for Phonegap ChildBrowser in external links
+			try{
+				window.plugins.childBrowser.showWebPage( url );
+			} catch( exp ){
+				// revert to the redular load
+				window.open(url, '_blank'); 
+			}
 			return false; 
 		}, 
 		findLink: function (obj) {
@@ -380,9 +388,14 @@ var APP = window.APP || (function(_, Backbone) {
 (function(_, Backbone) {
 	
 	APP.Router = Backbone.Router.extend({
+		
+		routes: {
+			"_=_": "fb_fix"
+		},
 		initialize: function(){
-			// include this in your router if using Google Analytics
-			// this.bind('all', this._trackPageview);
+			_.bindAll(this, 'fb_fix');
+			// analytics
+			this.bind('all', this._trackPageview);
 		}, 
 		// Save app state in a seperate object
 		state: {
@@ -395,9 +408,16 @@ var APP = window.APP || (function(_, Backbone) {
 						},
 			touch : ('ontouchstart' in document.documentElement)
 		}, 
+		// Routes
+		fb_fix: function(){
+			// addressing the issue: http://stackoverflow.com/q/7131909
+			this.navigate("/", true);
+		}, 
+		// Utils
 		_trackPageview: function(){ 
 			var url = Backbone.history.getFragment();
-			if( !_.isUndefined( _gaq ) ) _gaq.push(['_trackPageview', "/#"+url]);
+			// check for Google Analytics
+			if( typeof _gaq != "undefined" ) _gaq.push(['_trackPageview', "/#"+url]);
 		}
 		
 	});

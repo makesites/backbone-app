@@ -1,6 +1,6 @@
 {
   "name": "backbone-app",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "main": ["./build/backbone.app.min.js"],
   "dependencies": {}
 }
