@@ -6,6 +6,7 @@ The main purpose for this lib is to relieve you from setting up backbone.js on a
 
 Among others is contains a collection of "fixes" to common solutions and provides a solid foundation to start off developing!
 
+
 ## Features
 
 The APP() includes methods that connect it to: 
@@ -13,6 +14,7 @@ The APP() includes methods that connect it to:
 * Template class
 * External html fragments
 * Google Analytics 
+* Automated Session (with plugin)
 * Phonegap 
 
 
