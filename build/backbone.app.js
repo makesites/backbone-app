@@ -2,7 +2,7 @@
  * @name backbone-app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.4 (Wed, 20 Feb 2013 12:23:02 GMT)
+ * Version: 0.8.4 (Wed, 27 Feb 2013 04:39:02 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -11,6 +11,9 @@ if( !window.APP ) (function(_, Backbone) {
 	
 	// App contructor
 	APP = function(){
+		// get config
+		var options = arguments[0] || {};
+		// find router
 		var router = false;
 		// check URIs
 		var path = window.location.pathname.split( '/' );
@@ -23,7 +26,7 @@ if( !window.APP ) (function(_, Backbone) {
 			if(typeof(APP.Routers[router]) == "function") break;
 		}
 		// call the router or fallback to the default
-		var controller = (router && APP.Routers[router]) ? new APP.Routers[router]() : new APP.Routers.Default();
+		var controller = (router && APP.Routers[router]) ? new APP.Routers[router]( options ) : new APP.Routers.Default( options );
 		// return controller so it's accessible through the app global
 		return controller;
 	};
@@ -388,32 +391,77 @@ if( !window.APP ) (function(_, Backbone) {
 (function(_, Backbone) {
 	
 	APP.Router = Backbone.Router.extend({
-		
-		routes: {
-			"_=_": "fb_fix"
+		// this container with host the app configuration
+		options: {
 		},
-		initialize: function(){
-			_.bindAll(this, 'fb_fix');
-			// analytics
-			this.bind('all', this._trackPageview);
+		routes: {
+			"_=_": "_fixFB", 
+			"access_token=:token": "access_token"
+		}, 
+		initialize: function( options ){
+			// find config (as the first item in the passed arguments)
+			options = options[0] || {};
+			// bind 'this' with the methods
+			_.bindAll(this, 'access_token', '_setup', '_ajaxPrefilter','_fixFB');
+			// extend default options (recursive?)
+			_.extend( this.options, options);
+			// setup app 
+			this._setup();
+			// 
 		}, 
 		// Save app state in a seperate object
 		state: {
 			fullscreen: false, 
 			online: navigator.onLine,
+			// find browser type
 			browser: function(){ 
-							if( $.browser.safari && /chrome/.test(navigator.userAgent.toLowerCase()) ) return 'chrome';
-							if(/(iPhone|iPod).*OS 5.*AppleWebKit.*Mobile.*Safari/.test(navigator.userAgent) ) return 'ios';
-							return 'other';
-						},
-			touch : ('ontouchstart' in document.documentElement)
+				if( $.browser.safari && /chrome/.test(navigator.userAgent.toLowerCase()) ) return 'chrome';
+				if(/(iPhone|iPod).*OS 5.*AppleWebKit.*Mobile.*Safari/.test(navigator.userAgent) ) return 'ios';
+				return 'other';
+			},
+			// check if there's a touch screen
+			touch : ('ontouchstart' in document.documentElement) 
 		}, 
 		// Routes
-		fb_fix: function(){
-			// addressing the issue: http://stackoverflow.com/q/7131909
+		access_token: function( token ){
+			// if there's an app session, save it there
+			if( this.session ){
+				this.session.set({ "token" : token });
+			} else {
+				// set as a global var (for later use)
+				window.access_token = token;
+			}
+			// either way redirect back to home...
+			this.navigate("/");
+		},
+		// - internal
+		// collection of setup methods
+		_setup : function(){
+			// using options as the main configuration source
+			// - use an API URL
+			if( this.options.api ) this._ajaxPrefilter( this.options.api );
+			// - init analytics
+			this.bind('all', this._trackPageview);
+			// - setup session (+config), if available... 
+			if( APP.Session ) this.session = new APP.Session( ( this.options.session || {} ));
+		}, 
+		// set the api url for all ajax requests
+		_ajaxPrefilter: function( api ){
+			
+			$.ajaxPrefilter( function( options, originalOptions, jqXHR ) {
+				// use the api from the configuration
+				options.url = api + options.url;
+				options.xhrFields = {
+					withCredentials: true
+				};
+			});
+			
+		}, 
+		// addressing the issue: http://stackoverflow.com/q/7131909
+		_fixFB: function(){
 			this.navigate("/", true);
 		}, 
-		// Utils
+		// tracking client-side "page" views
 		_trackPageview: function(){ 
 			var url = Backbone.history.getFragment();
 			// check for Google Analytics
