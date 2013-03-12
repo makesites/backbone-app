@@ -1,8 +1,8 @@
 /**
- * @name backbone-app
+ * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.4 (Wed, 27 Feb 2013 04:39:02 GMT)
+ * Version: 0.8.6 (Tue, 12 Mar 2013 23:41:30 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -49,6 +49,12 @@ if( !window.APP ) (function(_, Backbone) {
 		interpolate : /\{\{(.+?)\}\}/g
 	};
 	
+	// if available, use the Handlebars compiler
+	if(typeof Handlebars != "undefined"){
+		_.mixin({
+			template : Handlebars.compile
+		});
+	}
 })(this._, this.Backbone, this.jQuery);
 (function(_, Backbone) {
 	
@@ -202,10 +208,16 @@ if( !window.APP ) (function(_, Backbone) {
 (function(_, Backbone, $) {
 	
 	APP.View =  Backbone.View.extend({
+		options : {
+			data : false
+		}, 
+		state: {
+			loaded : false
+		}, 
 		// events
 		events: {
 			"click a[rel='external']" : "clickExternal"
-		},
+		}, 
 		initialize: function(){
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
@@ -213,6 +225,7 @@ if( !window.APP ) (function(_, Backbone) {
 			_.bindAll(this, 'render', 'clickExternal', 'postRender'); 
 			// find the data
 			this.data = this.model || this.collection || null;
+			this.options.data  = !_.isNull( this.data );
 			//
 			if( _.isUndefined( this.options.type) ) this.options.type = "default";
 			// #9 optionally add a reference to the view in the container
@@ -230,14 +243,14 @@ if( !window.APP ) (function(_, Backbone) {
 			this.template = new Template(html, options);
 			this.template.bind("loaded", this.render);
 			// add listeners
-            if( !_.isNull( this.data ) ){
+            if( this.options.data ){
                 this.data.bind("change", this.render);
                 this.data.bind("reset", this.render);
                 this.data.bind("add", this.render);
                 this.data.bind("remove", this.render);
             }
-			// #11 : initial render only if data is not empty
-			if( !_.isNull( this.data ) && !_.isEmpty(this.data.toJSON()) ){ 
+			// #11 : initial render only if data is not empty (or there are no data)
+			if( !this.options.data || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ){ 
 				this.render();
 			}
 		},
@@ -247,7 +260,7 @@ if( !window.APP ) (function(_, Backbone) {
 			// 
 			var type = this.options.type;
 			var template = this.template.get(type);
-			var data = ( _.isNull(this.data) ) ? {} : this.data.toJSON();
+			var data = ( this.options.data ) ? {} : this.data.toJSON();
 			if( !_.isUndefined( template ) ) { 
 				// #19 - checking instance of template before executing as a function
 				var html = ( template instanceof Function ) ? template( data ) : template;
@@ -263,6 +276,15 @@ if( !window.APP ) (function(_, Backbone) {
 		postRender: function(){
 			// make sure the container is presented
 			$(this.el).show();
+			// remove loading state (if data has arrived)
+			if( !this.options.data || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ){ 
+				$(this.el).removeClass("loading");
+				// set the appropriate flag
+				this.state.loaded = true;
+				// bubble up the event
+				this.trigger("loaded");
+			}
+			
 		}, 
 		// a more descreete way of binding events triggers to objects
         listen : function( obj, event, callback ){
@@ -301,15 +323,47 @@ if( !window.APP ) (function(_, Backbone) {
 	
 	/* Main layout */
 	APP.Layout = Backbone.View.extend({
+		el: "body", 
 		// events
 		events: {},
+		views: new Backbone.Model(), 
 		initialize: function(){
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
 			// bind event to this object
-			//_.bindAll(this); 
-			
+			_.bindAll(this); 
+		}, 
+		render: function(){
+			// remove loading class (if any)
+			$(this.el).removeClass("loading");
+		}, 
+		// setter and getter mirroring the Model methods
+		set: function( views ){
+			// add event triggers on the views
+			for( var i in views){
+				views[i].on("loaded", this._viewLoaded );
+			}
+			return this.views.set( views );
+		}, 
+		get: function( view ){
+			return this.views.get( view );
+		}, 
+		// Internal methods
+		_viewLoaded : function(){
+			var registered = 0, 
+				loaded = 0;
+			// check if all the views are loaded
+			_.each(this.views.attributes, function( view ){
+				console.log( view );
+				if( view.state.loaded ) loaded++;
+				registered++;
+			});
+			// trigger render if all views are loaded
+			if( registered == loaded ){
+				this.render();
+			}
 		}
+		
 	});
 	
 })(this._, this.Backbone, this.jQuery);
@@ -317,7 +371,7 @@ if( !window.APP ) (function(_, Backbone) {
 	
 	APP.Template = Backbone.Model.extend({
 		initialize: function(html, options){
-			_.bindAll(this, 'fetch','parse'); 
+			_.bindAll(this, 'fetch', 'parse'); 
 			// fallback for options
 			var opt = options || (options={});
 			
@@ -330,6 +384,9 @@ if( !window.APP ) (function(_, Backbone) {
 				this.url = options.url;
 				this.fetch();
 			}
+		}, 
+		compile: function( markup ){ 
+			return _.template( markup ); 
 		}, 
 		fetch: function(){
 			// this can be replaced with a backbone method...
@@ -391,18 +448,22 @@ if( !window.APP ) (function(_, Backbone) {
 (function(_, Backbone) {
 	
 	APP.Router = Backbone.Router.extend({
-		// this container with host the app configuration
+		// app configuration:
 		options: {
+			location : false,
+			api : false
 		},
+		// to preserve these routes, extend with:
+		// _.extend({}, APP.Router.prototype.routes, {...});
 		routes: {
 			"_=_": "_fixFB", 
 			"access_token=:token": "access_token"
 		}, 
 		initialize: function( options ){
-			// find config (as the first item in the passed arguments)
-			options = options[0] || {};
+			// app config refered to as options
+			options = options || {};
 			// bind 'this' with the methods
-			_.bindAll(this, 'access_token', '_setup', '_ajaxPrefilter','_fixFB');
+			_.bindAll(this, 'access_token', 'preRoute', '_bindRoutes', '_callRoute', '_setup', '_ajaxPrefilter','_fixFB');
 			// extend default options (recursive?)
 			_.extend( this.options, options);
 			// setup app 
@@ -418,11 +479,41 @@ if( !window.APP ) (function(_, Backbone) {
 				if( $.browser.safari && /chrome/.test(navigator.userAgent.toLowerCase()) ) return 'chrome';
 				if(/(iPhone|iPod).*OS 5.*AppleWebKit.*Mobile.*Safari/.test(navigator.userAgent) ) return 'ios';
 				return 'other';
-			},
+			}, 
+			mobile: (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) ||navigator.userAgent.match(/BlackBerry/i)),		
+			ipad: (navigator.userAgent.match(/iPad/i) !== null), 
 			// check if there's a touch screen
-			touch : ('ontouchstart' in document.documentElement) 
+			touch : ('ontouchstart' in document.documentElement), 
+			pushstate: function() {
+				try {
+					window.history.pushState({"pageTitle": document.title}, document.title, window.location);	
+					return true;
+				} 
+				catch (e) {
+					return false;
+				}
+			}
 		}, 
 		// Routes
+		// this method wil be executed before "every" route!
+		preRoute: function( options, callback ){
+			var self = this;
+			// execute logic here:
+            // - check if there is a session
+			if( this.session && (typeof this.session.get("updated") !== "undefined") ){
+				// wait for the session
+				if( !this.session.get("updated") ){
+					return this.session.bind("loaded", _.once(function(){
+						callback.apply(self, options);
+					}) );
+				} else {
+					// session available...
+					return callback.apply(self, options);
+				}
+			}
+			return callback.apply(self, options);
+		}, 
+		
 		access_token: function( token ){
 			// if there's an app session, save it there
 			if( this.session ){
@@ -432,7 +523,7 @@ if( !window.APP ) (function(_, Backbone) {
 				window.access_token = token;
 			}
 			// either way redirect back to home...
-			this.navigate("/");
+			this.navigate("/", true);
 		},
 		// - internal
 		// collection of setup methods
@@ -442,13 +533,19 @@ if( !window.APP ) (function(_, Backbone) {
 			if( this.options.api ) this._ajaxPrefilter( this.options.api );
 			// - init analytics
 			this.bind('all', this._trackPageview);
-			// - setup session (+config), if available... 
+			// - monitor user's location
+			if( this.options.location ){
+				this._geoLocation();
+			}
+			// - setup session (+config), if namespace is available
 			if( APP.Session ) this.session = new APP.Session( ( this.options.session || {} ));
 		}, 
 		// set the api url for all ajax requests
 		_ajaxPrefilter: function( api ){
 			
 			$.ajaxPrefilter( function( options, originalOptions, jqXHR ) {
+				//#29 - apply api url only for data requests
+				if( originalOptions.dataType != "json" ) return;
 				// use the api from the configuration
 				options.url = api + options.url;
 				options.xhrFields = {
@@ -466,6 +563,36 @@ if( !window.APP ) (function(_, Backbone) {
 			var url = Backbone.history.getFragment();
 			// check for Google Analytics
 			if( typeof _gaq != "undefined" ) _gaq.push(['_trackPageview', "/#"+url]);
+		},
+		// - overriding default _bindRoutes
+		_bindRoutes: function() {
+			if (!this.routes) return;
+			var route, routes = _.keys(this.routes);
+			while (typeof (route = routes.pop()) !== "undefined") {
+				var name = this.routes[route];
+				// when we find the route we execute the preRoute
+				// with a reference to the route as a callback...
+				this.route(route, name, this._callRoute( this[name] ) );
+			}
+		},
+		// special execution of a route (with pre-logic)
+		_callRoute : function( route ){
+			return function(){ 
+					this.preRoute.call(this, arguments, route);
+				};
+		}, 
+		_geoLocation: function(){
+			var self = this;
+			// get user's location
+			navigator.geolocation.getCurrentPosition(
+				function( data ){ self.state.location = data; },
+				function(){ console.log("error", arguments); }
+			);
+			// update every 30 sec (to support mobile)
+			setTimeout( function(){
+				self._geoLocation();
+			}, 30000);
+			
 		}
 		
 	});
