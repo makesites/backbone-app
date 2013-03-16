@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.6 (Tue, 12 Mar 2013 23:41:30 GMT)
+ * Version: 0.8.7 (Sat, 16 Mar 2013 06:43:18 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -260,7 +260,7 @@ if( !window.APP ) (function(_, Backbone) {
 			// 
 			var type = this.options.type;
 			var template = this.template.get(type);
-			var data = ( this.options.data ) ? {} : this.data.toJSON();
+			var data = ( this.options.data ) ? this.data.toJSON() : {};
 			if( !_.isUndefined( template ) ) { 
 				// #19 - checking instance of template before executing as a function
 				var html = ( template instanceof Function ) ? template( data ) : template;
@@ -315,6 +315,11 @@ if( !window.APP ) (function(_, Backbone) {
 			} else {
 				return $(obj).attr("href");
 			}
+		}, 
+		// Internal methods
+		// - When navigate is triggered
+		_navigate: function( e ){
+			// extend method with custom logic
 		}
 	});
 	
@@ -323,20 +328,42 @@ if( !window.APP ) (function(_, Backbone) {
 	
 	/* Main layout */
 	APP.Layout = Backbone.View.extend({
+		
 		el: "body", 
+		
 		// events
 		events: {},
+		
 		views: new Backbone.Model(), 
+		
 		initialize: function(){
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
 			// bind event to this object
-			_.bindAll(this); 
+			_.bindAll(this);
+			this.on("update", this.update);
 		}, 
+		
 		render: function(){
 			// remove loading class (if any)
 			$(this.el).removeClass("loading");
 		}, 
+		
+		update: function( e ){
+			e = e || false;
+			// if there's no event exit?
+			if( !e ) return;
+			// broadcast the event to the views...
+			// - if there's rerouting:
+			if( e.navigate ){ 
+				// better way to get views?
+				for( var i in this.views.attributes){
+					this.views.attributes[i]._navigate(e);
+				}
+			}
+			// - include other conditions...
+		}, 
+		
 		// setter and getter mirroring the Model methods
 		set: function( views ){
 			// add event triggers on the views
@@ -345,16 +372,17 @@ if( !window.APP ) (function(_, Backbone) {
 			}
 			return this.views.set( views );
 		}, 
+		
 		get: function( view ){
 			return this.views.get( view );
 		}, 
+		
 		// Internal methods
 		_viewLoaded : function(){
 			var registered = 0, 
 				loaded = 0;
 			// check if all the views are loaded
 			_.each(this.views.attributes, function( view ){
-				console.log( view );
 				if( view.state.loaded ) loaded++;
 				registered++;
 			});
@@ -463,7 +491,7 @@ if( !window.APP ) (function(_, Backbone) {
 			// app config refered to as options
 			options = options || {};
 			// bind 'this' with the methods
-			_.bindAll(this, 'access_token', 'preRoute', '_bindRoutes', '_callRoute', '_setup', '_ajaxPrefilter','_fixFB');
+			_.bindAll(this, 'access_token', 'preRoute', '_layoutUpdate', '_bindRoutes', '_callRoute', '_setup', '_ajaxPrefilter','_fixFB');
 			// extend default options (recursive?)
 			_.extend( this.options, options);
 			// setup app 
@@ -492,6 +520,16 @@ if( !window.APP ) (function(_, Backbone) {
 				catch (e) {
 					return false;
 				}
+			}, 
+			scroll: true
+		}, 
+		update: function(){
+			// backwards compatibility for a simple state object
+			var scroll = (this.state instanceof Backbone.Model ) ? this.state.get("scroll") : this.state.scroll;
+			if( scroll ){ 
+				$("body").removeClass("no-scroll");  
+			} else {
+				$("body").addClass("no-scroll");  
 			}
 		}, 
 		// Routes
@@ -500,9 +538,9 @@ if( !window.APP ) (function(_, Backbone) {
 			var self = this;
 			// execute logic here:
             // - check if there is a session
-			if( this.session && (typeof this.session.get("updated") !== "undefined") ){
+			if( this.session && (typeof this.session.state !== "undefined") ){
 				// wait for the session
-				if( !this.session.get("updated") ){
+				if( !this.session.state ){
 					return this.session.bind("loaded", _.once(function(){
 						callback.apply(self, options);
 					}) );
@@ -533,12 +571,14 @@ if( !window.APP ) (function(_, Backbone) {
 			if( this.options.api ) this._ajaxPrefilter( this.options.api );
 			// - init analytics
 			this.bind('all', this._trackPageview);
+			this.bind('all', this._layoutUpdate);
+			
 			// - monitor user's location
 			if( this.options.location ){
 				this._geoLocation();
 			}
 			// - setup session (+config), if namespace is available
-			if( APP.Session ) this.session = new APP.Session( ( this.options.session || {} ));
+			if( APP.Session ) this.session = new APP.Session({}, ( this.options.session || {} ));
 		}, 
 		// set the api url for all ajax requests
 		_ajaxPrefilter: function( api ){
@@ -546,8 +586,11 @@ if( !window.APP ) (function(_, Backbone) {
 			$.ajaxPrefilter( function( options, originalOptions, jqXHR ) {
 				//#29 - apply api url only for data requests
 				if( originalOptions.dataType != "json" ) return;
-				// use the api from the configuration
-				options.url = api + options.url;
+				// use the api from the configuration (unless full URL specified)
+				var fullUrl = (options.url.search(/^http/) === 0);
+				if( !fullUrl ){
+					options.url = api + options.url;
+				}
 				options.xhrFields = {
 					withCredentials: true
 				};
@@ -564,6 +607,10 @@ if( !window.APP ) (function(_, Backbone) {
 			// check for Google Analytics
 			if( typeof _gaq != "undefined" ) _gaq.push(['_trackPageview', "/#"+url]);
 		},
+		_layoutUpdate: function(path){ 
+			//update the layout
+			if(this.layout) this.layout.trigger("update", { navigate : true, path : path });
+		}, 
 		// - overriding default _bindRoutes
 		_bindRoutes: function() {
 			if (!this.routes) return;
