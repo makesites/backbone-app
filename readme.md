@@ -1,6 +1,6 @@
 ## Backbone APP()
 
-An app object for the (browser) client using common conventions for Backbone.js
+An app object for the client, using common conventions for Backbone.js
 
 The main purpose for this lib is to relieve you from setting up backbone.js on a  low level - allowing you to focus on the things that are unique in your product. 
 
@@ -41,3 +41,10 @@ node build.js
 The build script will combine the contents of the "lib/" folder and output the compiled library in the "build/" folder.
 
 
+## Credits
+
+Created by Makis Tracend ( [@tracend](http://github.com/tracend) )
+
+Distributed through [Makesites.org](http://makesites.org/)
+
+Released under the [MIT license](http://makesites.org/licenses/MIT)
