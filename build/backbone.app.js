@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.7 (Sat, 16 Mar 2013 06:43:18 GMT)
+ * Version: 0.8.8 (Fri, 12 Apr 2013 04:03:55 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -46,7 +46,8 @@ if( !window.APP ) (function(_, Backbone) {
 	// Helpers
 	// this is to enable  syntax to simple _.template() calls
 	_.templateSettings = {
-		interpolate : /\{\{(.+?)\}\}/g
+		interpolate : /\{\{(.+?)\}\}/g,
+		variable : "."
 	};
 	
 	// if available, use the Handlebars compiler
@@ -209,7 +210,11 @@ if( !window.APP ) (function(_, Backbone) {
 	
 	APP.View =  Backbone.View.extend({
 		options : {
-			data : false
+			data : false,
+			html: false, 
+			template: false,
+			url : false,
+			type: false
 		}, 
 		state: {
 			loaded : false
@@ -218,7 +223,8 @@ if( !window.APP ) (function(_, Backbone) {
 		events: {
 			"click a[rel='external']" : "clickExternal"
 		}, 
-		initialize: function(){
+		initialize: function( options ){
+			var self = this;
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
 			//
@@ -227,7 +233,6 @@ if( !window.APP ) (function(_, Backbone) {
 			this.data = this.model || this.collection || null;
 			this.options.data  = !_.isNull( this.data );
 			//
-			if( _.isUndefined( this.options.type) ) this.options.type = "default";
 			// #9 optionally add a reference to the view in the container
 			if( this.options.attr ) {
 				$(this.el).attr("data-view", this.options.attr );
@@ -235,13 +240,25 @@ if( !window.APP ) (function(_, Backbone) {
 				$(this.el).removeAttr("data-view");
 			}
 			// compile
-			var html = this.options.html || null;
-			var options = {};
-			if(this.options.url) options.url = this.options.url;
+			var html = ( this.options.html ) ? this.options.html : null;
 			// #18 - supporting custom templates
-			var Template = (this.options.template) ? this.options.template : APP.Template;
-			this.template = new Template(html, options);
-			this.template.bind("loaded", this.render);
+			var Template = (this.options.template || typeof APP == "undefined") ? this.options.template : (APP.Template || false);
+			
+			if( Template ) { 
+				// set the type to default (as the Template expects)
+				if( _.isUndefined( this.options.type) ) this.options.type = "default";
+				this.template = new Template(html, { url : this.options.url });
+				this.template.bind("loaded", this.render);
+			} else if( this.options.url ) {
+				// fallback to the underscore template
+				$.get(this.options.url, function( html ){
+					self.template = _.template( html );
+					self.render();
+				});
+			} else {
+				this.template = _.template( html );
+				this.render();
+			}
 			// add listeners
             if( this.options.data ){
                 this.data.bind("change", this.render);
@@ -250,25 +267,26 @@ if( !window.APP ) (function(_, Backbone) {
                 this.data.bind("remove", this.render);
             }
 			// #11 : initial render only if data is not empty (or there are no data)
-			if( !this.options.data || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ){ 
+			if( ( (this.options.html || this.options.url ) && !this.options.data) || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ){ 
 				this.render();
 			}
+			// #36 - Adding resize event
+			$(window).bind("resize", _.bind(this._resize, this));
 		},
 		render: function(){
+			// prerequisite
+			if( !this.template ) return;
 			// execute pre-render actions
 			if( !_.isUndefined(this.preRender) ) this.preRender();
 			// 
-			var type = this.options.type;
-			var template = this.template.get(type);
+			var template = ( this.options.type ) ? this.template.get( this.options.type ) : this.template;
 			var data = ( this.options.data ) ? this.data.toJSON() : {};
-			if( !_.isUndefined( template ) ) { 
-				// #19 - checking instance of template before executing as a function
-				var html = ( template instanceof Function ) ? template( data ) : template;
-                if( this.options.append ){
-					$(this.el).append( html );
-                } else {
-					$(this.el).html( html );
-                }
+			// #19 - checking instance of template before executing as a function
+			var html = ( template instanceof Function ) ? template( data ) : template;
+			if( this.options.append ){
+				$(this.el).append( html );
+			} else {
+				$(this.el).html( html );
 			}
 			// execute post-render actions
 			if( !_.isUndefined(this.postRender) ) this.postRender();
@@ -286,7 +304,7 @@ if( !window.APP ) (function(_, Backbone) {
 			}
 			
 		}, 
-		// a more descreete way of binding events triggers to objects
+		// a more discrete way of binding events triggers to objects
         listen : function( obj, event, callback ){
             // adds event listeners to the data
             var e = ( typeof event == "string")? [event] : event;
@@ -295,6 +313,9 @@ if( !window.APP ) (function(_, Backbone) {
             }
             
         }, 
+		resize: function( e ){
+			// override with your own custom actions...
+		}, 
 		clickExternal: function(e){
 			e.preventDefault();
 			var url = this.findLink(e.target);
@@ -316,10 +337,29 @@ if( !window.APP ) (function(_, Backbone) {
 				return $(obj).attr("href");
 			}
 		}, 
+		remove: function() {
+			// unbind the namespaced 
+			$(window).unbind("resize", this._resize);
+			
+			// don't forget to call the original remove() function
+			Backbone.View.prototype.remove.call(this);
+		}, 
 		// Internal methods
 		// - When navigate is triggered
 		_navigate: function( e ){
 			// extend method with custom logic
+		}, 
+		// #36 - resize event trigger (with debouncer)
+		_resize: function () {
+			var self = this , 
+			args = arguments, 
+			timeout, 
+			delay = 1000; // default delay set to a second
+			console.log( "resize" );
+			clearTimeout( timeout );
+			timeout = setTimeout( function () {
+				self.resize.apply( self , Array.prototype.slice.call( args ) );
+			} , delay);
 		}
 	});
 	
@@ -521,7 +561,10 @@ if( !window.APP ) (function(_, Backbone) {
 					return false;
 				}
 			}, 
-			scroll: true
+			scroll: true, 
+			ram: function(){ 
+				return (console.memory) ? Math.round( 100 * (console.memory.usedJSHeapSize / console.memory.totalJSHeapSize)) : 0;
+			}
 		}, 
 		update: function(){
 			// backwards compatibility for a simple state object
@@ -582,7 +625,8 @@ if( !window.APP ) (function(_, Backbone) {
 		}, 
 		// set the api url for all ajax requests
 		_ajaxPrefilter: function( api ){
-			
+			var session = this.session || false;
+				
 			$.ajaxPrefilter( function( options, originalOptions, jqXHR ) {
 				//#29 - apply api url only for data requests
 				if( originalOptions.dataType != "json" ) return;
@@ -591,9 +635,17 @@ if( !window.APP ) (function(_, Backbone) {
 				if( !fullUrl ){
 					options.url = api + options.url;
 				}
+				// compatible with servers that set header  
+				// Access-Control-Allow-Credentials: true
+				// for added security 
 				options.xhrFields = {
 					withCredentials: true
 				};
+				// If we have a csrf token send it through with the next request
+				var csrf = (session) ? (session._csrf || session.get('_csrf') || false) : false;
+				if( csrf ) {
+					jqXHR.setRequestHeader('X-CSRF-Token', csrf);
+				}
 			});
 			
 		}, 
