@@ -1,6 +1,6 @@
 {
     "name" : "backbone.app",
-    "version" : "0.8.8",
+    "version" : "0.8.9",
 	"author": "makesites",
 	"homepage" : "http://github.com/makesites/backbone-app",
     "devDependencies" : {

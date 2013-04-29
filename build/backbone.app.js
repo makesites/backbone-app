@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.8 (Fri, 12 Apr 2013 04:03:55 GMT)
+ * Version: 0.8.9 (Mon, 29 Apr 2013 06:28:12 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -41,6 +41,35 @@ if( !window.APP ) (function(_, Backbone) {
 	
 	
 })(this._, this.Backbone);
+// Backbone Extender
+// Source: https://gist.github.com/tracend/5425415
+(function(_, Backbone){
+
+var origExtend = Backbone.Model.extend;
+
+var extend = function(protoProps, staticProps) {
+    
+    var parent = this;
+	
+	if (protoProps){ 
+        _.each(protoProps, function(value, key){
+			// modify only the objects that are available in the parent
+			if( key in parent.prototype && !(value instanceof Function) && !(parent.prototype[key] instanceof Function) ){
+				protoProps[key] = _.extend({}, parent.prototype[key], value);
+			}
+        });
+    }  
+    
+    return origExtend.call(this, protoProps, staticProps);
+  };
+
+  // Set up inheritance for the model, collection, router, view and history.
+  Backbone.Model.extend = Backbone.Collection.extend = Backbone.Router.extend = Backbone.View.extend = extend;
+
+})(this._, this.Backbone);
+
+
+// Underscore 
 (function(_, Backbone, $) {
 	
 	// Helpers
@@ -230,7 +259,7 @@ if( !window.APP ) (function(_, Backbone) {
 			//
 			_.bindAll(this, 'render', 'clickExternal', 'postRender'); 
 			// find the data
-			this.data = this.model || this.collection || null;
+			this.data = this.data || this.model || this.collection || null;
 			this.options.data  = !_.isNull( this.data );
 			//
 			// #9 optionally add a reference to the view in the container
@@ -246,7 +275,7 @@ if( !window.APP ) (function(_, Backbone) {
 			
 			if( Template ) { 
 				// set the type to default (as the Template expects)
-				if( _.isUndefined( this.options.type) ) this.options.type = "default";
+				if( !this.options.type ) this.options.type = "default";
 				this.template = new Template(html, { url : this.options.url });
 				this.template.bind("loaded", this.render);
 			} else if( this.options.url ) {
@@ -273,11 +302,15 @@ if( !window.APP ) (function(_, Backbone) {
 			// #36 - Adding resize event
 			$(window).bind("resize", _.bind(this._resize, this));
 		},
+		
+		preRender: function(){
+		}, 
+		
 		render: function(){
 			// prerequisite
 			if( !this.template ) return;
 			// execute pre-render actions
-			if( !_.isUndefined(this.preRender) ) this.preRender();
+			this.preRender();
 			// 
 			var template = ( this.options.type ) ? this.template.get( this.options.type ) : this.template;
 			var data = ( this.options.data ) ? this.data.toJSON() : {};
@@ -289,7 +322,7 @@ if( !window.APP ) (function(_, Backbone) {
 				$(this.el).html( html );
 			}
 			// execute post-render actions
-			if( !_.isUndefined(this.postRender) ) this.postRender();
+			this.postRender();
 		}, 
 		postRender: function(){
 			// make sure the container is presented
@@ -364,6 +397,7 @@ if( !window.APP ) (function(_, Backbone) {
 	});
 	
 })(this._, this.Backbone, this.jQuery);
+
 (function(_, Backbone, $) {
 	
 	/* Main layout */
