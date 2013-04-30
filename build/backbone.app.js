@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Mon, 29 Apr 2013 06:28:12 GMT)
+ * Version: 0.8.9 (Tue, 30 Apr 2013 10:17:14 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -418,9 +418,17 @@ var extend = function(protoProps, staticProps) {
 			this.on("update", this.update);
 		}, 
 		
+		preRender: function(){
+		}, 
+		
 		render: function(){
+            this.preRender();
 			// remove loading class (if any)
 			$(this.el).removeClass("loading");
+            this.postRender();
+		}, 
+		
+		postRender: function(){
 		}, 
 		
 		update: function( e ){
@@ -553,13 +561,15 @@ var extend = function(protoProps, staticProps) {
 		// app configuration:
 		options: {
 			location : false,
-			api : false
+			api : false,
+            p404 : "/"
 		},
 		// to preserve these routes, extend with:
 		// _.extend({}, APP.Router.prototype.routes, {...});
 		routes: {
 			"_=_": "_fixFB", 
-			"access_token=:token": "access_token"
+			"access_token=:token": "access_token", 
+            "*path"  : "_404"
 		}, 
 		initialize: function( options ){
 			// app config refered to as options
@@ -726,7 +736,15 @@ var extend = function(protoProps, staticProps) {
 				self._geoLocation();
 			}, 30000);
 			
-		}
+		}, 
+        
+        // Fallback 404 route
+        _404: function(path) {
+            var msg = "Unable to find path: " + path;
+            console.log(msg);
+            // redirect to 404 path
+            this.navigate( this.options.p404 );
+        }
 		
 	});
 	
