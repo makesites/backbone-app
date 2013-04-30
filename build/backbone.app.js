@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Tue, 30 Apr 2013 10:17:14 GMT)
+ * Version: 0.8.9 (Tue, 30 Apr 2013 10:35:21 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -54,8 +54,8 @@ var extend = function(protoProps, staticProps) {
 	if (protoProps){ 
         _.each(protoProps, function(value, key){
 			// modify only the objects that are available in the parent
-			if( key in parent.prototype && !(value instanceof Function) && !(parent.prototype[key] instanceof Function) ){
-				protoProps[key] = _.extend({}, parent.prototype[key], value);
+			if( key in parent.prototype && !(value instanceof Function) && !(parent.prototype[key] instanceof Function) && (parent.prototype[key] instanceof Object) ){
+                protoProps[key] = _.extend({}, value, parent.prototype[key]);
 			}
         });
     }  
