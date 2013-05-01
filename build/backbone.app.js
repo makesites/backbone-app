@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Wed, 01 May 2013 11:45:34 GMT)
+ * Version: 0.8.9 (Wed, 01 May 2013 12:23:56 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -506,7 +506,7 @@ var extend = function(protoProps, staticProps) {
         
         // broadcast all data updates in the views back to the layout
         _syncData: function( action, model, collection, options ){
-            var data = false;
+            var value = false;
             // get the key of the data
             var key = collection._view || false;
             // if we haven't kept a reference key to backtrack, exit now
@@ -518,14 +518,16 @@ var extend = function(protoProps, staticProps) {
                 if( keys.indexOf( key ) == -1 ) return;
                 // get the data in an exported form (usually toJSON is enough)
                 try{ 
-                    data = collection.output();
+                    value = collection.output();
                 } catch( e ){
                     // assume this collection is generic
-                    data = collection.toJSON();
+                    value = collection.toJSON();
                 }
                 // final condition...
-                if( data ){ 
-                    this.model.set({ key : data });
+                if( value ){ 
+                    var data = {};
+                    data[key] = value;
+                    this.model.set( data );
                     // immediately save?
                     if (this.options.autosync){ 
                         this.model.save();
