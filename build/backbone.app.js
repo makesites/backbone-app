@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Wed, 01 May 2013 11:34:24 GMT)
+ * Version: 0.8.9 (Wed, 01 May 2013 11:45:34 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -127,7 +127,14 @@ var extend = function(protoProps, staticProps) {
 		getValue : function(object, prop) {
 			if (!(object && object[prop])) return null;
 			return _.isFunction(object[prop]) ? object[prop]() : object[prop];
-		}
+		},
+        
+        // extract data (and possibly filter keys)
+        output: function(){
+            // in most cases it's a straight JSON output
+            return this.toJSON();
+        }
+        
 	});
 	
 	
@@ -216,7 +223,14 @@ var extend = function(protoProps, staticProps) {
 		// - check if the app is online
 		isOnline: function(){
 			return ( !_.isUndefined( app ) ) ? app.state.online : true;
-		}
+		}, 
+        
+        // extract data (and possibly filter keys)
+        output: function(){
+            // in most cases it's a straight JSON output
+            return this.toJSON();
+        }
+        
 	});
 	
 	
