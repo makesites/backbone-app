@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Wed, 01 May 2013 11:24:59 GMT)
+ * Version: 0.8.9 (Wed, 01 May 2013 11:34:24 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -406,6 +406,11 @@ var extend = function(protoProps, staticProps) {
 		
 		el: "body", 
 		
+        // 
+        options: {
+            autosync : false
+        }, 
+        
 		// events
 		events: {},
 		
@@ -508,8 +513,9 @@ var extend = function(protoProps, staticProps) {
                 if( data ){ 
                     this.model.set({ key : data });
                     // immediately save?
-                    //if (this.options.autosync)
-                    this.model.save();
+                    if (this.options.autosync){ 
+                        this.model.save();
+                    }
                 }
             }
         }
