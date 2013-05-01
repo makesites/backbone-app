@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Wed, 01 May 2013 00:40:33 GMT)
+ * Version: 0.8.9 (Wed, 01 May 2013 02:29:53 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -452,6 +452,15 @@ var extend = function(protoProps, staticProps) {
 			// add event triggers on the views
 			for( var i in views){
 				views[i].on("loaded", _.bind( this._viewLoaded, this ) );
+                // 'stamp' each view with a label
+                views[i]._name = i;
+                // bind events
+                if( views[i].data ) {
+                    // view reference in the data
+                    views[i].data._view = i;
+                    // bind all data updates to the layout
+                    views[i].data.bind("all", _.bind(this._syncData, this) );
+                }
 			}
 			return this.views.set( views );
 		}, 
