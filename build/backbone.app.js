@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Wed, 01 May 2013 12:23:56 GMT)
+ * Version: 0.8.9 (Mon, 06 May 2013 10:06:24 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -129,6 +129,12 @@ var extend = function(protoProps, staticProps) {
 			return _.isFunction(object[prop]) ? object[prop]() : object[prop];
 		},
         
+        parse: function(data){
+            var self = this;
+            setTimeout(function(){ self.trigger("fetch"); }, 200); // better way to trigger this after parse?
+            return data;
+        }, 
+        
         // extract data (and possibly filter keys)
         output: function(){
             // in most cases it's a straight JSON output
@@ -157,8 +163,11 @@ var extend = function(protoProps, staticProps) {
 (function(_, Backbone) {
 	
 	APP.Collection = Backbone.Collection.extend({
+        
+        options: {}, 
+        
 		// initialization (if not overriden)
-		initialize: function(models, options){
+		initialize: function( models, options ){
 			// save options for later
 			this.options = options || {};
 			// auto-fetch if no models are passed
@@ -166,9 +175,12 @@ var extend = function(protoProps, staticProps) {
 				this.fetch();
 			}
 		}, 
+        /*
 		// DEPRECATED variables
 		attributes: {
 		}, 
+        */
+        /*
 		// A custom add function that can prevent models with duplicate IDs
 		// from being added to the collection. Usage:
 		add: function(models, options) {
@@ -206,9 +218,11 @@ var extend = function(protoProps, staticProps) {
 			this.remove(model_in_array);
 			this.add(updated_model);
 		}, 
+        */
 		update:  function(){
 
 		}, 
+        /*
 		// Helper functions
 		// - set an attribute
 		setAttr: function( attr ) {
@@ -220,10 +234,17 @@ var extend = function(protoProps, staticProps) {
 		getAttr: function( attr ) {
 			return this.attributes[attr];
 		}, 
+        */
 		// - check if the app is online
 		isOnline: function(){
 			return ( !_.isUndefined( app ) ) ? app.state.online : true;
 		}, 
+        
+        parse: function(data){
+            var self = this;
+            setTimeout(function(){ self.trigger("fetch"); }, 200); // better way to trigger this after parse?
+            return data;
+        }, 
         
         // extract data (and possibly filter keys)
         output: function(){
