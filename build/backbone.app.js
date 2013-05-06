@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Mon, 06 May 2013 10:51:24 GMT)
+ * Version: 0.8.9 (Mon, 06 May 2013 12:59:36 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -227,6 +227,7 @@ var extend = function(protoProps, staticProps) {
 
 		}, 
         
+        // #41 - save action for collections
         save: function(){     
             var self = this;
             var method = this.isNew() ? 'create' : 'update';
@@ -301,7 +302,8 @@ var extend = function(protoProps, staticProps) {
 			html: false, 
 			template: false,
 			url : false,
-			type: false
+			type: false,
+            inRender: false
 		}, 
 		state: {
 			loaded : false
@@ -372,8 +374,10 @@ var extend = function(protoProps, staticProps) {
 			// 
 			var template = ( this.options.type ) ? this.template.get( this.options.type ) : this.template;
 			var data = ( this.options.data ) ? this.data.toJSON() : {};
+            // #43 - adding options to the template data
+            var json = ( this.options.inRender ) ? { data : data, options: this.options } : data;
 			// #19 - checking instance of template before executing as a function
-			var html = ( template instanceof Function ) ? template( data ) : template;
+			var html = ( template instanceof Function ) ? template( json ) : template;
 			if( this.options.append ){
 				$(this.el).append( html );
 			} else {
