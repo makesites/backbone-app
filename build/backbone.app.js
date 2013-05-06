@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Mon, 06 May 2013 10:22:42 GMT)
+ * Version: 0.8.9 (Mon, 06 May 2013 10:51:24 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -164,7 +164,11 @@ var extend = function(protoProps, staticProps) {
 	
 	APP.Collection = Backbone.Collection.extend({
         
-        options: {}, 
+        options: {
+            _synced : false
+        }, 
+        
+        model: APP.Model, 
         
 		// initialization (if not overriden)
 		initialize: function( models, options ){
@@ -222,6 +226,19 @@ var extend = function(protoProps, staticProps) {
 		update:  function(){
 
 		}, 
+        
+        save: function(){     
+            var self = this;
+            var method = this.isNew() ? 'create' : 'update';
+            //
+            Backbone.sync(method, this, { 
+                success: function(){                                                                                                                                                                                                                                                                                                                                          
+                    // console.log('data saved!'); 
+                    self.options._synced = true;
+                }                                                                                                                                                                                                                                                                                                                                                             
+            });                                                                                                                                                                                                                                                                                                                                                               
+        },
+        
         /*
 		// Helper functions
 		// - set an attribute
@@ -235,11 +252,7 @@ var extend = function(protoProps, staticProps) {
 			return this.attributes[attr];
 		}, 
         */
-		// - check if the app is online
-		isOnline: function(){
-			return ( !_.isUndefined( app ) ) ? app.state.online : true;
-		}, 
-        
+		
         parse: function(data){
             var self = this;
             setTimeout(function(){ self.trigger("fetch"); }, 200); // better way to trigger this after parse?
@@ -250,7 +263,16 @@ var extend = function(protoProps, staticProps) {
         output: function(){
             // in most cases it's a straight JSON output
             return this.toJSON();
-        }
+        },
+        
+        isNew: function() {
+            return this.options._synced === false;
+        },
+        
+        // - check if the app is online
+		isOnline: function(){
+			return ( !_.isUndefined( app ) ) ? app.state.online : true;
+		}
         
 	});
 	
