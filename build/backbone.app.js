@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Mon, 06 May 2013 12:59:36 GMT)
+ * Version: 0.8.9 (Wed, 08 May 2013 02:11:27 GMT)
  * @license Apache License, Version 2.0
  */
  
@@ -544,12 +544,19 @@ var extend = function(protoProps, staticProps) {
 				if( view.state.loaded ) loaded++;
 				registered++;
 			});
-			// trigger render if all views are loaded
+			
+            // when all views are loaded...
 			if( registered == loaded ){
-				this.render();
-			}
+                this._allViewsLoaded();
+            }
+            
 		}, 
         
+        // what to do after all views are loaded
+        _allViewsLoaded : _.once(function(){ 
+                // re-render the layout
+                this.render();
+        }),
         
         // broadcast all data updates in the views back to the layout
         _syncData: function( action, model, collection, options ){
