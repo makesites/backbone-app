@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Sun, 12 May 2013 08:14:40 GMT)
+ * Version: 0.8.9 (Tue, 21 May 2013 02:52:58 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -87,6 +87,48 @@ var extend = function(protoProps, staticProps) {
 		});
 	}
 })(this._, this.Backbone, this.jQuery);
+
+/*
+ * Backbone.ready()
+ * Source: https://gist.github.com/tracend/5617079
+ *
+ * by Makis Tracend( @tracend )
+ *
+ * Usage:
+ * Backbone.ready( callback );
+ *
+ */
+(function(window, document, Backbone){
+
+	// find the $
+	$ = ('$' in window) ? window.$ : window.jQuery || window.Zepto || false;
+
+	Backbone.ready = function( callback ){
+
+		if( PhoneGap && PhoneGap.init ){
+			// Support Phonegap Shim: https://github.com/makesites/phonegap-shim
+			return PhoneGap.init( callback );
+
+		} else if( $ ) {
+			// use the 'default' ready event
+			return $(document).ready( callback );
+
+		} else if (window.addEventListener) {
+			// ultimate fallback, add window event - trigger the page as soon it's loaded
+			return window.addEventListener('load', callback, false);
+
+		} else {
+			// IE...
+			return window.attachEvent('onload', callback);
+		}
+
+	};
+
+	return Backbone;
+
+})(window, document, this.Backbone);
+
+
 
 (function(_, Backbone) {
 
