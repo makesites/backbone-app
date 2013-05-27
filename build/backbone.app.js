@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Tue, 21 May 2013 02:52:58 GMT)
+ * Version: 0.8.9 (Mon, 27 May 2013 06:32:19 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -346,7 +346,8 @@ var extend = function(protoProps, staticProps) {
 			template: false,
 			url : false,
 			type: false,
-			inRender: false
+			inRender: false,
+			silentRender: false
 		},
 		state: {
 			loaded : false
@@ -431,7 +432,7 @@ var extend = function(protoProps, staticProps) {
 		},
 		postRender: function(){
 			// make sure the container is presented
-			$(this.el).show();
+			if( !this.options.silentRender ) $(this.el).show();
 			// remove loading state (if data has arrived)
 			if( !this.options.data || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ){
 				$(this.el).removeClass("loading");
