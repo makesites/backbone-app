@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Mon, 27 May 2013 07:13:47 GMT)
+ * Version: 0.8.9 (Mon, 27 May 2013 07:18:39 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -136,7 +136,7 @@ var extend = function(protoProps, staticProps) {
 	APP.Model = Backbone.Model.extend({
 
 		options: {
-			// nothing yet...
+			autofetch: false
 		},
 
 		// initialization
@@ -144,7 +144,10 @@ var extend = function(protoProps, staticProps) {
 			// save options for later
 			options = options || {};
 			this.options = _.extend({}, this.options, options);
-
+			// auto-fetch if no models are passed
+			if( this.options.autofetch && _.isEmpty(models) && this.url ){
+				this.fetch();
+			}
 		},
 
 		// cache all data to localstorage
@@ -221,7 +224,8 @@ var extend = function(protoProps, staticProps) {
 	APP.Collection = Backbone.Collection.extend({
 
 		options: {
-			_synced : false
+			_synced : false,
+			autofetch: false
 		},
 
 		model: APP.Model,
@@ -232,7 +236,7 @@ var extend = function(protoProps, staticProps) {
 			options = options || {};
 			this.options = _.extend({}, this.options, options);
 			// auto-fetch if no models are passed
-			if( _.isNull(models) ){
+			if( this.options.autofetch && _.isEmpty(models) && this.url ){
 				this.fetch();
 			}
 		},
