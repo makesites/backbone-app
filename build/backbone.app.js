@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Mon, 27 May 2013 06:32:19 GMT)
+ * Version: 0.8.9 (Mon, 27 May 2013 07:13:47 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -134,6 +134,19 @@ var extend = function(protoProps, staticProps) {
 
 	// **Main constructors**
 	APP.Model = Backbone.Model.extend({
+
+		options: {
+			// nothing yet...
+		},
+
+		// initialization
+		initialize: function( model, options ){
+			// save options for later
+			options = options || {};
+			this.options = _.extend({}, this.options, options);
+
+		},
+
 		// cache all data to localstorage
 		cache: function(){
 			// construct a cache mechanism, using localstorage or other...
@@ -213,10 +226,11 @@ var extend = function(protoProps, staticProps) {
 
 		model: APP.Model,
 
-		// initialization (if not overriden)
+		// initialization
 		initialize: function( models, options ){
 			// save options for later
-			this.options = options || {};
+			options = options || {};
+			this.options = _.extend({}, this.options, options);
 			// auto-fetch if no models are passed
 			if( _.isNull(models) ){
 				this.fetch();
