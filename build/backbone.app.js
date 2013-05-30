@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Mon, 27 May 2013 07:18:39 GMT)
+ * Version: 0.8.9 (Thu, 30 May 2013 09:32:32 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -541,6 +541,8 @@ var extend = function(protoProps, staticProps) {
 		initialize: function(){
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
+			// add touch class to body
+			if( app.state.touch ) $(this.el).addClass("touch");
 			// bind event to this object
 			_.bindAll(this);
 			this.on("update", this.update);
