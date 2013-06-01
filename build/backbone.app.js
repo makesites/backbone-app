@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Sat, 01 Jun 2013 00:26:59 GMT)
+ * Version: 0.8.9 (Sat, 01 Jun 2013 11:22:19 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -548,7 +548,7 @@ var extend = function(protoProps, staticProps) {
 
 		// events
 		events: {
-			"click a:not([rel='external'])" : "_clickLink"
+			"click a:not([rel='external'],[rel='alternate'])" : "_clickLink"
 		},
 
 		views: new Backbone.Model(),
