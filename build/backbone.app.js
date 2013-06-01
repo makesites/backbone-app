@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Thu, 30 May 2013 09:32:32 GMT)
+ * Version: 0.8.9 (Sat, 01 Jun 2013 00:26:59 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -432,7 +432,7 @@ var extend = function(protoProps, staticProps) {
 			// prerequisite
 			if( !this.template ) return;
 			// execute pre-render actions
-			this.preRender();
+			this._preRender();
 			//
 			var template = ( this.options.type ) ? this.template.get( this.options.type ) : this.template;
 			var data = ( this.options.data ) ? this.data.toJSON() : {};
@@ -446,21 +446,12 @@ var extend = function(protoProps, staticProps) {
 				$(this.el).html( html );
 			}
 			// execute post-render actions
-			this.postRender();
+			this._postRender();
 		},
-		postRender: function(){
-			// make sure the container is presented
-			if( !this.options.silentRender ) $(this.el).show();
-			// remove loading state (if data has arrived)
-			if( !this.options.data || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ){
-				$(this.el).removeClass("loading");
-				// set the appropriate flag
-				this.state.loaded = true;
-				// bubble up the event
-				this.trigger("loaded");
-			}
 
+		postRender: function(){
 		},
+
 		// a more discrete way of binding events triggers to objects
 		listen : function( obj, event, callback ){
 			// adds event listeners to the data
@@ -501,7 +492,29 @@ var extend = function(protoProps, staticProps) {
 			// don't forget to call the original remove() function
 			Backbone.View.prototype.remove.call(this);
 		},
+
 		// Internal methods
+
+		_preRender: function(){
+			// app-specific actions
+			this.preRender();
+		},
+
+		_postRender: function(){
+			// make sure the container is presented
+			if( !this.options.silentRender ) $(this.el).show();
+			// remove loading state (if data has arrived)
+			if( !this.options.data || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ){
+				$(this.el).removeClass("loading");
+				// set the appropriate flag
+				this.state.loaded = true;
+				// bubble up the event
+				this.trigger("loaded");
+			}
+			// app-specific actions
+			this.postRender();
+		},
+
 		// - When navigate is triggered
 		_navigate: function( e ){
 			// extend method with custom logic
@@ -534,28 +547,29 @@ var extend = function(protoProps, staticProps) {
 		},
 
 		// events
-		events: {},
+		events: {
+			"click a:not([rel='external'])" : "_clickLink"
+		},
 
 		views: new Backbone.Model(),
 
 		initialize: function(){
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
-			// add touch class to body
-			if( app.state.touch ) $(this.el).addClass("touch");
 			// bind event to this object
 			_.bindAll(this);
 			this.on("update", this.update);
 		},
 
 		preRender: function(){
+
 		},
 
 		render: function(){
-			this.preRender();
+			this._preRender();
 			// remove loading class (if any)
 			$(this.el).removeClass("loading");
-			this.postRender();
+			this._postRender();
 		},
 
 		postRender: function(){
@@ -598,7 +612,27 @@ var extend = function(protoProps, staticProps) {
 			return this.views.get( view );
 		},
 
+		findLink: function (target) {
+			if (target.tagName != "A") {
+				return $(target).closest("a").attr("href");
+			} else {
+				return $(target).attr("href");
+			}
+		},
+
 		// Internal methods
+		_preRender: function(){
+			// add touch class to body
+			if( app.state.touch ) $(this.el).addClass("touch");
+			// app-specific actions
+			this.preRender();
+		},
+
+		_postRender: function(){
+			// app-specific actions
+			this.postRender();
+		},
+
 		_viewLoaded : function(){
 			var registered = 0,
 				loaded = 0;
@@ -654,6 +688,21 @@ var extend = function(protoProps, staticProps) {
 					}
 				}
 			}
+		},
+
+		_clickLink: function( e ){
+			if( app.state.standalone() ){
+				var url = this.findLink(e.target);
+				if( _.isEmpty(url) || url.substr(0,1) == "#" ){
+					// this is not a valid link
+				} else {
+					// block default behavior
+					e.preventDefault();
+					window.location = url;
+					return false;
+				}
+			}
+			// otherwise pass through...
 		}
 
 	});
@@ -792,7 +841,8 @@ var extend = function(protoProps, staticProps) {
 			scroll: true,
 			ram: function(){
 				return (console.memory) ? Math.round( 100 * (console.memory.usedJSHeapSize / console.memory.totalJSHeapSize)) : 0;
-			}
+			},
+			standalone: function(){ return (("standalone" in window.navigator) && window.navigator.standalone) || (typeof PhoneGap !="undefined" && PhoneGap.env && PhoneGap.env.app ); }
 		},
 		update: function(){
 			// backwards compatibility for a simple state object
