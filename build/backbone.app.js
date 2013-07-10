@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.8.9 (Sun, 16 Jun 2013 09:11:12 GMT)
+ * Version: 0.9.0 (Wed, 10 Jul 2013 12:02:50 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -543,7 +543,8 @@ var extend = function(protoProps, staticProps) {
 
 		//
 		options: {
-			autosync : false
+			autosync : false,
+			sync_events: "add remove change"
 		},
 
 		// events
@@ -602,7 +603,7 @@ var extend = function(protoProps, staticProps) {
 					// view reference in the data
 					views[i].data._view = i;
 					// bind all data updates to the layout
-					views[i].data.bind("all", _.bind(this._syncData, this) );
+					views[i].data.on(this.options.sync_events, _.bind(this._syncData, this) );
 				}
 			}
 			return this.views.set( views );
@@ -656,7 +657,8 @@ var extend = function(protoProps, staticProps) {
 		}),
 
 		// broadcast all data updates in the views back to the layout
-		_syncData: function( action, model, collection, options ){
+		//_syncData: function( action, model, collection, options ){
+		_syncData: function( model, collection, options ){
 			var value = false;
 			// fallback
 			var data = collection || model || false;
