@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.0 (Wed, 10 Jul 2013 12:02:50 GMT)
+ * Version: 0.9.0 (Tue, 16 Jul 2013 17:10:31 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -477,6 +477,14 @@ var extend = function(protoProps, staticProps) {
 				window.open(url, '_blank');
 			}
 			return false;
+		},
+		// attach to an event for a tab like effect
+		clickTab: function(e){
+			e.preventDefault();
+			var section = this.findLink(e.target);
+			$(this.el).find( section ).show().siblings().hide();
+			// optionally add selected class if li available
+			$(e.target).parent("li").addClass("selected").siblings().removeClass("selected");
 		},
 		findLink: function (obj) {
 			if (obj.tagName != "A") {
