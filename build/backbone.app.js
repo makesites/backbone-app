@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.0 (Tue, 13 Aug 2013 07:58:25 GMT)
+ * Version: 0.9.0 (Tue, 13 Aug 2013 08:18:54 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -291,16 +291,16 @@ var extend = function(protoProps, staticProps) {
 		},
 
 		// #41 - save action for collections
-		save: function(){
-			var self = this;
-			var method = this.isNew() ? 'create' : 'update';
-			//
-			Backbone.sync(method, this, {
-				success: function(){
-					// console.log('data saved!');
-					self.options._synced = true;
-				}
-			});
+		save: function(models, options){
+			// merge models
+			_.extend(this.models, models);
+			// callback is run once, after all models have saved.
+			if( options.success ){
+				var callback = _.after(this.models.length, options.success);
+				_.each( this.models, function( model ){
+					model.save(null, {success: callback});
+				});
+			}
 		},
 
 		/*
