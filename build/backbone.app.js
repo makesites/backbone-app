@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.0 (Tue, 06 Aug 2013 05:43:29 GMT)
+ * Version: 0.9.0 (Tue, 13 Aug 2013 07:58:25 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -161,6 +161,7 @@ var extend = function(protoProps, staticProps) {
 		},
 		// FIX: override sync to support DELETE method (411 error on NGINX)
 		// issue: http://serverfault.com/q/396020
+		/*
 		sync : function(method, model, options) {
 			var methodMap = { 'create': 'POST', 'update': 'PUT', 'delete': 'DELETE', 'read':   'GET' };
 			var type = methodMap[method];
@@ -182,6 +183,7 @@ var extend = function(protoProps, staticProps) {
 
 			return $.ajax(_.extend(params, options));
 		},
+		*/
 		// Helper - DELETE if the sync is not needed any more...
 		getValue : function(object, prop) {
 			if (!(object && object[prop])) return null;
