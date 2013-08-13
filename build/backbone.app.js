@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.0 (Tue, 13 Aug 2013 08:18:54 GMT)
+ * Version: 0.9.0 (Tue, 13 Aug 2013 10:35:39 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -366,6 +366,7 @@ var extend = function(protoProps, staticProps) {
 			template: false,
 			url : false,
 			type: false,
+			autoRender: true,
 			inRender: false,
 			silentRender: false
 		},
@@ -401,16 +402,16 @@ var extend = function(protoProps, staticProps) {
 				// set the type to default (as the Template expects)
 				if( !this.options.type ) this.options.type = "default";
 				this.template = new Template(html, { url : this.options.url });
-				this.template.bind("loaded", this.render);
+				if( self.options.autoRender ) this.template.bind("loaded", this.render);
 			} else if( this.options.url ) {
 				// fallback to the underscore template
 				$.get(this.options.url, function( html ){
 					self.template = _.template( html );
-					self.render();
+					if( self.options.autoRender ) self.render();
 				});
 			} else {
 				this.template = _.template( html );
-				this.render();
+				if( self.options.autoRender ) this.render();
 			}
 			// add listeners
 			if( this.options.data ){
@@ -420,7 +421,7 @@ var extend = function(protoProps, staticProps) {
 				this.data.bind("remove", this.render);
 			}
 			// #11 : initial render only if data is not empty (or there are no data)
-			if( ( (this.options.html || this.options.url ) && !this.options.data) || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ){
+			if( self.options.autoRender && ( ( (this.options.html || this.options.url ) && !this.options.data) || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ) ){
 				this.render();
 			}
 			// #36 - Adding resize event
