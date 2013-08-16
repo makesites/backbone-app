@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.0 (Tue, 13 Aug 2013 10:35:39 GMT)
+ * Version: 0.9.1 (Fri, 16 Aug 2013 02:25:07 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -145,7 +145,7 @@ var extend = function(protoProps, staticProps) {
 			options = options || {};
 			this.options = _.extend({}, this.options, options);
 			// auto-fetch if no models are passed
-			if( this.options.autofetch && _.isEmpty(models) && this.url ){
+			if( this.options.autofetch && _.isEmpty(model) && this.url ){
 				this.fetch();
 			}
 		},
