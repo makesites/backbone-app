@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.1 (Mon, 19 Aug 2013 09:08:00 GMT)
+ * Version: 0.9.1 (Wed, 21 Aug 2013 00:33:13 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -365,6 +365,7 @@ var extend = function(protoProps, staticProps) {
 			html: false,
 			template: false,
 			url : false,
+			bind: "add remove reset change", // change the default to "sync"?
 			type: false,
 			autoRender: true,
 			inRender: false,
@@ -415,10 +416,7 @@ var extend = function(protoProps, staticProps) {
 			}
 			// add listeners
 			if( this.options.data ){
-				this.data.bind("change", this.render);
-				this.data.bind("reset", this.render);
-				this.data.bind("add", this.render);
-				this.data.bind("remove", this.render);
+				this.data.on( this.options.bind, this.render);
 			}
 			// #11 : initial render only if data is not empty (or there are no data)
 			if( self.options.autoRender && ( ( (this.options.html || this.options.url ) && !this.options.data) || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ) ){
