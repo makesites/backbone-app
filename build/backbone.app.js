@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.1 (Wed, 21 Aug 2013 00:33:13 GMT)
+ * Version: 0.9.1 (Fri, 23 Aug 2013 05:00:18 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -105,8 +105,7 @@ var extend = function(protoProps, staticProps) {
 
 	Backbone.ready = function( callback ){
 
-		if( PhoneGap && PhoneGap.init ){
-			// Support Phonegap Shim: https://github.com/makesites/phonegap-shim
+		if( isPhonegap() ){
 			return PhoneGap.init( callback );
 
 		} else if( $ ) {
@@ -124,10 +123,17 @@ var extend = function(protoProps, staticProps) {
 
 	};
 
+	// Helpers
+
+	// - Support Phonegap Shim: https://github.com/makesites/phonegap-shim
+	function isPhonegap(){
+		// only execute in app mode?
+		return PhoneGap && typeof PhoneGap.init != "undefined" && typeof PhoneGap.env != "undefined"  && PhoneGap.env.app;
+	}
+
 	return Backbone;
 
 })(window, document, this.Backbone);
-
 
 
 (function(_, Backbone) {
