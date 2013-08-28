@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.1 (Fri, 23 Aug 2013 05:00:18 GMT)
+ * Version: 0.9.1 (Wed, 28 Aug 2013 00:46:39 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -154,6 +154,11 @@ var extend = function(protoProps, staticProps) {
 			if( this.options.autofetch && !_.isUndefined(this.url) ){
 				this.fetch();
 			}
+		},
+
+		// #63 reset model to its default values
+		reset: function(){
+			return this.clear().set(this.defaults);
 		},
 
 		// cache all data to localstorage
