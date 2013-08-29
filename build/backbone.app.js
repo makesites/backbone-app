@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.2 (Wed, 28 Aug 2013 05:20:51 GMT)
+ * Version: 0.9.2 (Thu, 29 Aug 2013 07:51:05 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -380,7 +380,8 @@ var extend = function(protoProps, staticProps) {
 			type: false,
 			autoRender: true,
 			inRender: false,
-			silentRender: false
+			silentRender: false,
+			renderTarget: false
 		},
 		state: {
 			loaded : false
@@ -452,10 +453,12 @@ var extend = function(protoProps, staticProps) {
 			var json = ( this.options.inRender ) ? { data : data, options: this.options } : data;
 			// #19 - checking instance of template before executing as a function
 			var html = ( template instanceof Function ) ? template( json ) : template;
+			// #64 find the render target
+			var $container = ( this.options.renderTarget ) ? $(this.el).find(this.options.renderTarget) : $(this.el);
 			if( this.options.append ){
-				$(this.el).append( html );
+				$container.append( html );
 			} else {
-				$(this.el).html( html );
+				$container.html( html );
 			}
 			// execute post-render actions
 			this._postRender();
