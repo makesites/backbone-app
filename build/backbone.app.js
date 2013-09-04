@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.2 (Wed, 04 Sep 2013 04:06:47 GMT)
+ * Version: 0.9.2 (Wed, 04 Sep 2013 04:45:24 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -431,7 +431,7 @@ var extend = function(protoProps, staticProps) {
 				this.data.on( this.options.bind, this.render);
 			}
 			// #11 : initial render only if data is not empty (or there are no data)
-			if( self.options.autoRender && ( ( (this.options.html || this.options.url ) && !this.options.data) || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ) ){
+			if( this._initRender() ){
 				this.render();
 			}
 			// #36 - Adding resize event
@@ -517,6 +517,17 @@ var extend = function(protoProps, staticProps) {
 		},
 
 		// Internal methods
+
+		_initRender: function(){
+			if( !this.options.autoRender ) return false;
+			var hasMarkup = (this.options.html || this.options.url );
+			var hasData = (this.options.data && ( _.isUndefined( this.data.toJSON ) || ( !_.isUndefined( this.data.toJSON ) && !_.isEmpty(this.data.toJSON()))));
+			// if there's markup and no data, render
+			if( hasMarkup && !this.options.data) return true;
+			// if there's data and data is available, render
+			if( hasData ) return true;
+			return false;
+		},
 
 		_preRender: function(){
 			// app-specific actions
