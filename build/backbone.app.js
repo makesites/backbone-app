@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.2 (Wed, 04 Sep 2013 04:45:24 GMT)
+ * Version: 0.9.2 (Wed, 04 Sep 2013 05:42:36 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -448,7 +448,7 @@ var extend = function(protoProps, staticProps) {
 			this._preRender();
 			//
 			var template = ( this.options.type ) ? this.template.get( this.options.type ) : this.template;
-			var data = ( this.options.data ) ? this.data.toJSON() : {};
+			var data = this._getJSON();
 			// #43 - adding options to the template data
 			var json = ( this.options.inRender ) ? { data : data, options: this.options } : data;
 			// #19 - checking instance of template before executing as a function
@@ -547,6 +547,13 @@ var extend = function(protoProps, staticProps) {
 			}
 			// app-specific actions
 			this.postRender();
+		},
+
+		// get the JSON of the data
+		_getJSON: function(){
+			if( !this.options.data ) return {};
+			if( this.data.toJSON ) return this.data.toJSON();
+			return this.data;
 		},
 
 		// - When navigate is triggered
