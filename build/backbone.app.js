@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.2 (Wed, 04 Sep 2013 05:42:36 GMT)
+ * Version: 0.9.2 (Wed, 04 Sep 2013 05:53:21 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -538,7 +538,7 @@ var extend = function(protoProps, staticProps) {
 			// make sure the container is presented
 			if( !this.options.silentRender ) $(this.el).show();
 			// remove loading state (if data has arrived)
-			if( !this.options.data || (this.options.data && !_.isEmpty(this.data.toJSON()) ) ){
+			if( !this.options.data || (this.options.data && !_.isEmpty(this._getJSON()) ) ){
 				$(this.el).removeClass("loading");
 				// set the appropriate flag
 				this.state.loaded = true;
