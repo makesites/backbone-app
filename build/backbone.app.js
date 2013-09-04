@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.2 (Wed, 04 Sep 2013 05:53:21 GMT)
+ * Version: 0.9.2 (Wed, 04 Sep 2013 07:16:01 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -414,7 +414,7 @@ var extend = function(protoProps, staticProps) {
 			if( Template ) {
 				// set the type to default (as the Template expects)
 				if( !this.options.type ) this.options.type = "default";
-				this.template = new Template(html, { url : this.options.url });
+				this.template = (typeof Template == "function") ? new Template(html, { url : this.options.url }) : Template;
 				if( self.options.autoRender ) this.template.bind("loaded", this.render);
 			} else if( this.options.url ) {
 				// fallback to the underscore template
