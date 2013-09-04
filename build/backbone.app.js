@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.2 (Thu, 29 Aug 2013 07:51:05 GMT)
+ * Version: 0.9.2 (Wed, 04 Sep 2013 04:06:47 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -427,7 +427,7 @@ var extend = function(protoProps, staticProps) {
 				if( self.options.autoRender ) this.render();
 			}
 			// add listeners
-			if( this.options.data ){
+			if( this.options.data && !_.isUndefined( this.data.on ) ){
 				this.data.on( this.options.bind, this.render);
 			}
 			// #11 : initial render only if data is not empty (or there are no data)
