@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.2 (Thu, 05 Sep 2013 04:02:25 GMT)
+ * Version: 0.9.2 (Thu, 05 Sep 2013 04:16:19 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -378,6 +378,7 @@ var extend = function(protoProps, staticProps) {
 			url : false,
 			bind: "add remove reset change", // change the default to "sync"?
 			type: false,
+			parentEl : false,
 			autoRender: true,
 			inRender: false,
 			silentRender: false,
