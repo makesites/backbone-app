@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.2 (Wed, 04 Sep 2013 07:16:01 GMT)
+ * Version: 0.9.2 (Thu, 05 Sep 2013 04:02:25 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -454,7 +454,7 @@ var extend = function(protoProps, staticProps) {
 			// #19 - checking instance of template before executing as a function
 			var html = ( template instanceof Function ) ? template( json ) : template;
 			// #64 find the render target
-			var $container = ( this.options.renderTarget ) ? $(this.el).find(this.options.renderTarget) : $(this.el);
+			var $container = this._findContainer();
 			if( this.options.append ){
 				$container.append( html );
 			} else {
@@ -554,6 +554,22 @@ var extend = function(protoProps, staticProps) {
 			if( !this.options.data ) return {};
 			if( this.data.toJSON ) return this.data.toJSON();
 			return this.data;
+		},
+
+		_findContainer: function(){
+			// by default
+			var container = $(this.el);
+			if ( !this.options.renderTarget ) return container;
+
+			if ( typeof this.options.renderTarget == "string" ){
+				container = $(this.el).find(this.options.renderTarget).first();
+				return container;
+			}
+			if( typeof this.options.renderTarget == "object" ){
+				container = this.options.renderTarget;
+				return container;
+			}
+
 		},
 
 		// - When navigate is triggered
