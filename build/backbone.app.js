@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.2 (Thu, 05 Sep 2013 04:35:58 GMT)
+ * Version: 0.9.2 (Thu, 05 Sep 2013 23:38:50 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -457,7 +457,7 @@ var extend = function(protoProps, staticProps) {
 			// #64 find the render target
 			var $container = this._findContainer();
 			// #66 if parent is the render target, html is the element
-			if( this.options.parentEl && (this.options.parentEl === $container) ){
+			if( this.options.parentEl && (this.options.parentEl === this.options.renderTarget) ){
 				this.el = $(html);
 				html = this.el;
 			}
@@ -564,17 +564,22 @@ var extend = function(protoProps, staticProps) {
 
 		_findContainer: function(){
 			// by default
-			var container = $(this.el);
-			if ( !this.options.renderTarget ) return container;
+			var container = this.el;
 
-			if ( typeof this.options.renderTarget == "string" ){
+			if ( !this.options.renderTarget ){
+				// do nothing more
+
+			} else if ( typeof this.options.renderTarget == "string" ){
+
 				container = $(this.el).find(this.options.renderTarget).first();
-				return container;
-			}
-			if( typeof this.options.renderTarget == "object" ){
+
+			} else if( typeof this.options.renderTarget == "object" ){
+
 				container = this.options.renderTarget;
-				return container;
 			}
+
+			// convert into a jQuery object if needed
+			return ( container instanceof jQuery) ? container : $(container);
 
 		},
 
