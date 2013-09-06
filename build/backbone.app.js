@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.2 (Thu, 05 Sep 2013 23:38:50 GMT)
+ * Version: 0.9.2 (Fri, 06 Sep 2013 09:51:20 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -458,7 +458,8 @@ var extend = function(protoProps, staticProps) {
 			var $container = this._findContainer();
 			// #66 if parent is the render target, html is the element
 			if( this.options.parentEl && (this.options.parentEl === this.options.renderTarget) ){
-				this.el = $(html);
+				this.el = this.$el = $(html);
+				// fix to ensure what's inserted in the dom is 'connected' to element
 				html = this.el;
 			}
 			if( this.options.append ){
