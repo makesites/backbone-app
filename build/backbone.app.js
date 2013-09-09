@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.3 (Mon, 09 Sep 2013 06:37:18 GMT)
+ * Version: 0.9.3 (Mon, 09 Sep 2013 06:44:48 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -627,7 +627,7 @@ var extend = function(protoProps, staticProps) {
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
 			// bind event to this object
-			_.bindAll(this);
+			_.bindAll(this, "set", "get", "render", "update", "_clickLink", "_viewLoaded", "_syncData");
 			this.on("update", this.update);
 		},
 
