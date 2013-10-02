@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.3 (Wed, 02 Oct 2013 21:05:18 GMT)
+ * Version: 0.9.3 (Wed, 02 Oct 2013 21:33:46 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -982,7 +982,7 @@ var extend = function(protoProps, staticProps) {
 			// - use an API URL
 			if( this.options.api ) this._ajaxPrefilter( this.options.api );
 			// - init analytics
-			this.bind('all', this._trackPageview);
+			//this.bind('all', this._trackPageview);
 			this.bind('all', this._layoutUpdate);
 
 			// - monitor user's location
@@ -1022,12 +1022,14 @@ var extend = function(protoProps, staticProps) {
 		_fixFB: function(){
 			this.navigate("/", true);
 		},
-		// tracking client-side "page" views
+		// tracking client-side "page" views - replaces by Backbone.Analytics (in helpers)
+		/*
 		_trackPageview: function(){
 			var url = Backbone.history.getFragment();
 			// check for Google Analytics
 			if( typeof _gaq != "undefined" ) _gaq.push(['_trackPageview', "/#"+url]);
 		},
+		*/
 		_layoutUpdate: function(path){
 			//update the layout
 			if(this.layout) this.layout.trigger("update", { navigate : true, path : path });
