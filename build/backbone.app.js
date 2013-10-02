@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.3 (Fri, 27 Sep 2013 06:05:33 GMT)
+ * Version: 0.9.3 (Wed, 02 Oct 2013 21:05:18 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -135,7 +135,24 @@ var extend = function(protoProps, staticProps) {
 
 })(window, document, this.Backbone);
 
+// Backbone.Analytics
+// Source: https://github.com/kendagriff/backbone.analytics
+(function() {
+	var loadUrl = Backbone.History.prototype.loadUrl;
 
+	Backbone.History.prototype.loadUrl = function(fragmentOverride) {
+		var matched = loadUrl.apply(this, arguments),
+				gaFragment = this.fragment;
+		if (!/^\//.test(gaFragment)) gaFragment = '/' + gaFragment;
+		if(typeof window._gaq !== "undefined") window._gaq.push(['_trackPageview', gaFragment]);
+		if(typeof window.GoogleAnalyticsObject !== "undefined"){
+			var ga = window.GoogleAnalyticsObject;
+			window[ga]('send', 'pageview', gaFragment);
+		}
+		return matched;
+	};
+
+}).call(this);
 (function(_, Backbone) {
 
 	// **Main constructors**
