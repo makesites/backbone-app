@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.3 (Thu, 03 Oct 2013 00:35:44 GMT)
+ * Version: 0.9.3 (Thu, 03 Oct 2013 02:04:05 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -167,12 +167,14 @@ var extend = function(protoProps, staticProps) {
 	// find the $
 	//$ = ('$' in window) ? window.$ : window.jQuery || window.Zepto || false;
 
-	Backbone.View = Backbone.View.extend({
+	var View = Backbone.View;
+
+	Backbone.View = View.extend({
 		states: {
 		},
 		initialize: function(options){
 			this.initStates();
-			return Backbone.View.prototype.initialize.call(this, options);
+			return View.prototype.initialize.call(this, options);
 		},
 		initStates: function(){
 			for(var e in this.states){
@@ -184,11 +186,12 @@ var extend = function(protoProps, staticProps) {
 	});
 
 	// Helpers
-
+	//...
 
 	return Backbone;
 
 })(window, document, this.Backbone);
+
 (function(_, Backbone) {
 
 	// **Main constructors**
@@ -498,7 +501,8 @@ var extend = function(protoProps, staticProps) {
 			$(window).bind("resize", _.bind(this._resize, this));
 			// #69 adding scroll monitor
 			$(window).scroll( function(){ self.trigger("scroll"); });
-
+			// initiate parent (states etc.)
+			return Backbone.View.prototype.initialize.call( this, options );
 		},
 
 		preRender: function(){
