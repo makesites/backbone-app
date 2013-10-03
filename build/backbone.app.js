@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.3 (Thu, 03 Oct 2013 02:04:05 GMT)
+ * Version: 0.9.3 (Thu, 03 Oct 2013 04:53:20 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -442,9 +442,6 @@ var extend = function(protoProps, staticProps) {
 			silentRender: false,
 			renderTarget: false
 		},
-		state: {
-			loaded : false
-		},
 		// events
 		events: {
 			"click a[rel='external']" : "clickExternal"
@@ -452,6 +449,11 @@ var extend = function(protoProps, staticProps) {
 		// states
 		states: {
 			"scroll": "_scroll"
+		},
+		state: {
+			loaded : false,
+			scroll : false,
+			visible : false
 		},
 		initialize: function( options ){
 			var self = this;
@@ -668,7 +670,26 @@ var extend = function(protoProps, staticProps) {
 
 		//
 		_scroll: function () {
+			//this.state.scroll = true;
+		},
+		// checks if the view is visible
+		isVisible: function(){
 
+			var viewportWidth = jQuery(window).width(),
+				viewportHeight = jQuery(window).height(),
+
+				documentScrollTop = jQuery(document).scrollTop(),
+				documentScrollLeft = jQuery(document).scrollLeft(),
+
+				minTop = documentScrollTop,
+				maxTop = documentScrollTop + viewportHeight,
+				minLeft = documentScrollLeft,
+				maxLeft = documentScrollLeft + viewportWidth,
+
+				$el = $(this.el),
+				elementOffset = $el.offset();
+
+			return ( (elementOffset.top >= minTop && elementOffset.top < maxTop) && (elementOffset.left >= minLeft && elementOffset.left < maxLeft) );
 		}
 
 	});
