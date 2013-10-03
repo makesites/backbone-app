@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.3 (Thu, 03 Oct 2013 04:53:20 GMT)
+ * Version: 0.9.3 (Thu, 03 Oct 2013 05:09:35 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -688,8 +688,18 @@ var extend = function(protoProps, staticProps) {
 
 				$el = $(this.el),
 				elementOffset = $el.offset();
+			// condition
+			var visible = ( (elementOffset.top >= minTop && elementOffset.top < maxTop) && (elementOffset.left >= minLeft && elementOffset.left < maxLeft) );
+			// trigger state if needed
+			if( visible && !this.state.visible ){
+				this.trigger("visible");
+			} else {
+				this.trigger("hidden");
+			}
+			// save state for later...
+			this.state.visible = visible;
 
-			return ( (elementOffset.top >= minTop && elementOffset.top < maxTop) && (elementOffset.left >= minLeft && elementOffset.left < maxLeft) );
+			return visible;
 		}
 
 	});
