@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.3 (Wed, 02 Oct 2013 22:29:35 GMT)
+ * Version: 0.9.3 (Thu, 03 Oct 2013 00:35:44 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -446,6 +446,10 @@ var extend = function(protoProps, staticProps) {
 		events: {
 			"click a[rel='external']" : "clickExternal"
 		},
+		// states
+		states: {
+			"scroll": "_scroll"
+		},
 		initialize: function( options ){
 			var self = this;
 			// #12 : unbind this container from any previous listeners
@@ -492,6 +496,9 @@ var extend = function(protoProps, staticProps) {
 			}
 			// #36 - Adding resize event
 			$(window).bind("resize", _.bind(this._resize, this));
+			// #69 adding scroll monitor
+			$(window).scroll( function(){ self.trigger("scroll"); });
+
 		},
 
 		preRender: function(){
@@ -653,7 +660,13 @@ var extend = function(protoProps, staticProps) {
 			timeout = setTimeout( function () {
 				self.resize.apply( self , Array.prototype.slice.call( args ) );
 			} , delay);
+		},
+
+		//
+		_scroll: function () {
+
 		}
+
 	});
 
 })(this._, this.Backbone, this.jQuery);
