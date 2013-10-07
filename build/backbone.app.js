@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.3 (Thu, 03 Oct 2013 05:09:35 GMT)
+ * Version: 0.9.3 (Mon, 07 Oct 2013 07:12:07 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -479,11 +479,11 @@ var extend = function(protoProps, staticProps) {
 			if( Template ) {
 				// set the type to default (as the Template expects)
 				if( !this.options.type ) this.options.type = "default";
-				this.template = (typeof Template == "function") ? new Template(html, { url : this.options.url }) : Template;
+				this.template = (typeof Template == "function") ? new Template(html, { url : this.url() }) : Template;
 				if( self.options.autoRender ) this.template.bind("loaded", this.render);
 			} else if( this.options.url ) {
 				// fallback to the underscore template
-				$.get(this.options.url, function( html ){
+				$.get(this.url(), function( html ){
 					self.template = _.template( html );
 					if( self.options.autoRender ) self.render();
 				});
@@ -505,6 +505,10 @@ var extend = function(protoProps, staticProps) {
 			$(window).scroll( function(){ self.trigger("scroll"); });
 			// initiate parent (states etc.)
 			return Backbone.View.prototype.initialize.call( this, options );
+		},
+		// #71 parse URL in runtime (optionally)
+		url: function(){
+			return (typeof this.options.url == "function")? this.options.url() : this.options.url;
 		},
 
 		preRender: function(){
