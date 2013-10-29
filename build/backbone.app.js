@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.4 (Sun, 27 Oct 2013 12:06:21 GMT)
+ * Version: 0.9.4 (Tue, 29 Oct 2013 09:19:56 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -475,15 +475,17 @@ var extend = function(protoProps, staticProps) {
 			var html = ( this.options.html ) ? this.options.html : null;
 			// #18 - supporting custom templates
 			var Template = (this.options.template || typeof APP == "undefined") ? this.options.template : (APP.Template || false);
+			// #72 - include init options in url()
+			var url = this.url( options );
 
 			if( Template ) {
 				// set the type to default (as the Template expects)
 				if( !this.options.type ) this.options.type = "default";
-				this.template = (typeof Template == "function") ? new Template(html, { url : this.url() }) : Template;
+				this.template = (typeof Template == "function") ? new Template(html, { url : url }) : Template;
 				if( self.options.autoRender ) this.template.bind("loaded", this.render);
-			} else if( this.options.url ) {
+			} else if( url ) {
 				// fallback to the underscore template
-				$.get(this.url(), function( html ){
+				$.get(url, function( html ){
 					self.template = _.template( html );
 					if( self.options.autoRender ) self.render();
 				});
@@ -507,8 +509,11 @@ var extend = function(protoProps, staticProps) {
 			return Backbone.View.prototype.initialize.call( this, options );
 		},
 		// #71 parse URL in runtime (optionally)
-		url: function(){
-			return (typeof this.options.url == "function")? this.options.url() : this.options.url;
+		url: function( options ){
+			// fallback
+			options = options || {};
+			var url = options.url || this.options.url;
+			return (typeof url == "function")? url() : url;
 		},
 
 		preRender: function(){
