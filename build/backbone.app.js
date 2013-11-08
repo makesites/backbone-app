@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.4 (Tue, 29 Oct 2013 09:19:56 GMT)
+ * Version: 0.9.4 (Fri, 08 Nov 2013 08:24:29 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -792,6 +792,18 @@ var extend = function(protoProps, staticProps) {
 
 		get: function( view ){
 			return this.views.get( view );
+		},
+
+		// removes a view
+		remove: function( name ){
+			//console.log("unset", name);
+			var view = this.get( name );
+			// prerequisite
+			if( _.isUndefined(view) ) return;
+			// undelegate view events
+			view.remove();
+			// remove the attribute from this.views
+			return this.views.unset( name );
 		},
 
 		findLink: function (target) {
