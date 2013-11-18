@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.4 (Mon, 18 Nov 2013 07:26:05 GMT)
+ * Version: 0.9.4 (Mon, 18 Nov 2013 07:50:57 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1000,6 +1000,7 @@ var extend = function(protoProps, staticProps) {
 		// to preserve these routes, extend with:
 		// _.extend({}, APP.Router.prototype.routes, {...});
 		routes: {
+			"": "index",
 			"_=_": "_fixFB",
 			"access_token=:token": "access_token",
 			"*path"  : "_404"
@@ -1018,6 +1019,12 @@ var extend = function(protoProps, staticProps) {
 			this._setup();
 			//
 		},
+
+		// default route - override with custom method
+		index: function(){
+
+		},
+
 		// Save app state in a seperate object
 		state: {
 			fullscreen: false,
