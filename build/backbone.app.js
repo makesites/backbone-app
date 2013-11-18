@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.4 (Mon, 18 Nov 2013 05:59:39 GMT)
+ * Version: 0.9.4 (Mon, 18 Nov 2013 07:26:05 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1004,6 +1004,9 @@ var extend = function(protoProps, staticProps) {
 			"access_token=:token": "access_token",
 			"*path"  : "_404"
 		},
+
+		data: new Backbone.Model(),
+
 		initialize: function( options ){
 			// app config refered to as options
 			options = options || {};
