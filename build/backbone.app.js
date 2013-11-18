@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.4 (Fri, 08 Nov 2013 08:24:29 GMT)
+ * Version: 0.9.4 (Mon, 18 Nov 2013 05:59:39 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -440,7 +440,8 @@ var extend = function(protoProps, staticProps) {
 			autoRender: true,
 			inRender: false,
 			silentRender: false,
-			renderTarget: false
+			renderTarget: false,
+			saveOptions: true // eventually disable this (test first)
 		},
 		// events
 		events: {
@@ -457,14 +458,18 @@ var extend = function(protoProps, staticProps) {
 		},
 		initialize: function( options ){
 			var self = this;
+			// fallback
+			options = options || {};
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
 			//
 			_.bindAll(this, 'render', 'clickExternal', 'postRender');
+			// #73 - optionally saving options
+			if( this.options.saveOptions ) this.options = _.extend(this.options, options);
 			// find the data
 			this.data = this.data || this.model || this.collection || null;
 			this.options.data  = !_.isNull( this.data );
-			//
+
 			// #9 optionally add a reference to the view in the container
 			if( this.options.attr ) {
 				$(this.el).attr("data-view", this.options.attr );
