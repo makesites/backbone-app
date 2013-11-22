@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.4 (Mon, 18 Nov 2013 07:50:57 GMT)
+ * Version: 0.9.4 (Fri, 22 Nov 2013 09:05:05 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -508,8 +508,6 @@ var extend = function(protoProps, staticProps) {
 			}
 			// #36 - Adding resize event
 			$(window).bind("resize", _.bind(this._resize, this));
-			// #69 adding scroll monitor
-			$(window).scroll( function(){ self.trigger("scroll"); });
 			// initiate parent (states etc.)
 			return Backbone.View.prototype.initialize.call( this, options );
 		},
