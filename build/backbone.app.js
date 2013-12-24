@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.4 (Fri, 22 Nov 2013 09:05:05 GMT)
+ * Version: 0.9.4 (Tue, 24 Dec 2013 06:46:29 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -601,6 +601,10 @@ var extend = function(protoProps, staticProps) {
 
 			// don't forget to call the original remove() function
 			Backbone.View.prototype.remove.call(this);
+		},
+
+		unbind: function( types, fn ) {
+			return this.off( types, null, fn );
 		},
 
 		// Internal methods
