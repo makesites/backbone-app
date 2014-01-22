@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.4 (Tue, 24 Dec 2013 06:46:29 GMT)
+ * Version: 0.9.4 (Wed, 22 Jan 2014 09:52:22 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -814,11 +814,9 @@ var extend = function(protoProps, staticProps) {
 		},
 
 		findLink: function (target) {
-			if (target.tagName != "A") {
-				return $(target).closest("a").attr("href");
-			} else {
-				return $(target).attr("href");
-			}
+			var url = (target.tagName != "A") ? $(target).closest("a").attr("href") : $(target).attr("href");
+			// filter empty URLs
+			return ( _.isEmpty(url) || url.substr(0,1) == "#" ) ? false : url;
 		},
 
 		// Internal methods
@@ -893,16 +891,18 @@ var extend = function(protoProps, staticProps) {
 		},
 
 		_clickLink: function( e ){
-			if( app.state.standalone() ){
-				var url = this.findLink(e.target);
-				if( _.isEmpty(url) || url.substr(0,1) == "#" ){
-					// this is not a valid link
-				} else {
+			var url = this.findLink(e.target);
+			if( url ){
+				// add loading class
+				$(this.el).addClass("loading");
+			}
+			// when to intercept links
+			if( app.state.standalone() && url ){
 					// block default behavior
 					e.preventDefault();
+					//
 					window.location = url;
 					return false;
-				}
 			}
 			// otherwise pass through...
 		}
