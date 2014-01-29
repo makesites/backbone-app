@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.4 (Sun, 26 Jan 2014 09:11:03 GMT)
+ * Version: 0.9.5 (Wed, 29 Jan 2014 08:47:14 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -963,28 +963,6 @@ var extend = function(protoProps, staticProps) {
 			this.trigger("loaded");
 			//return data;
 		}
-	});
-
-
-	// *** Extensions ***
-
-	// Supports a template written in markdown
-	// ( showdown.js assumed loaded )
-	// options:
-	// - url : for a file containing the temaplte
-	// - html : for a string directly used as the template
-	//
-	APP.Templates.Markdown = APP.Template.extend({
-
-		initialize: function( html, options ){
-
-			var showdown = new Showdown.converter();
-
-			this.compile = showdown.makeHtml;
-
-			return APP.Template.prototype.initialize.call( this, html, options );
-		}
-
 	});
 
 
