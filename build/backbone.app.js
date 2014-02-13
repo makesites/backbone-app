@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Thu, 13 Feb 2014 21:22:23 GMT)
+ * Version: 0.9.5 (Thu, 13 Feb 2014 21:58:30 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1049,7 +1049,9 @@ var extend = function(protoProps, staticProps) {
 
 		// vanilla logout route
 		logout: function(){
-			if( this.session ) this.session.trigger("logout");
+			if( this.session ) this.session.trigger("logout", { reload: true });
+			// back to the homepage
+			this.navigate("/", true);
 		},
 
 
