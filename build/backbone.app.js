@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Wed, 29 Jan 2014 08:47:14 GMT)
+ * Version: 0.9.5 (Thu, 13 Feb 2014 21:22:23 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -983,6 +983,7 @@ var extend = function(protoProps, staticProps) {
 			"": "index",
 			"_=_": "_fixFB",
 			"access_token=:token": "access_token",
+			"logout": "logout",
 			"*path"  : "_404"
 		},
 
@@ -998,11 +999,6 @@ var extend = function(protoProps, staticProps) {
 			// setup app
 			this._setup();
 			//
-		},
-
-		// default route - override with custom method
-		index: function(){
-
 		},
 
 		// Save app state in a seperate object
@@ -1044,7 +1040,19 @@ var extend = function(protoProps, staticProps) {
 				$("body").addClass("no-scroll");
 			}
 		},
+
 		// Routes
+		// default route - override with custom method
+		index: function(){
+
+		},
+
+		// vanilla logout route
+		logout: function(){
+			if( this.session ) this.session.trigger("logout");
+		},
+
+
 		// this method wil be executed before "every" route!
 		preRoute: function( options, callback ){
 			var self = this;
