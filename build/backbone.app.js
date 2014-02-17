@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Thu, 13 Feb 2014 21:58:30 GMT)
+ * Version: 0.9.5 (Mon, 17 Feb 2014 21:39:28 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -460,6 +460,8 @@ var extend = function(protoProps, staticProps) {
 			var self = this;
 			// fallback
 			options = options || {};
+			// #39 - backbone > 1.0 does not extend options automatically... (condition this?)
+			this.options = _.extend({}, this.options, options);
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
 			//
@@ -742,12 +744,18 @@ var extend = function(protoProps, staticProps) {
 
 		views: new Backbone.Model(),
 
-		initialize: function(){
+		initialize: function( options ){
+			// fallback
+			options = options || {};
+			// #39 - backbone > 1.0 does not extend options automatically... (condition this?)
+			this.options = _.extend({}, this.options, options);
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
 			// bind event to this object
 			_.bindAll(this, "set", "get", "render", "update", "_clickLink", "_viewLoaded", "_syncData");
 			this.on("update", this.update);
+			// initiate parent
+			return Backbone.View.prototype.initialize.call( this, options );
 		},
 
 		preRender: function(){
