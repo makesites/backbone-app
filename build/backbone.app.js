@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Mon, 17 Feb 2014 21:39:28 GMT)
+ * Version: 0.9.5 (Mon, 17 Feb 2014 21:49:39 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -482,8 +482,12 @@ var extend = function(protoProps, staticProps) {
 			var html = ( this.options.html ) ? this.options.html : null;
 			// #18 - supporting custom templates
 			var Template = (this.options.template || typeof APP == "undefined") ? this.options.template : (APP.Template || false);
+			// #76 considering url as a flat option
+			if( this.url && !this.options.url) this.options.url = this.url; // check for string?
 			// #72 - include init options in url()
-			var url = this.url( options );
+			var url = this._url( options );
+			// proxy internal method for future requests
+			this.url = this._url;
 
 			if( Template ) {
 				// set the type to default (as the Template expects)
@@ -514,7 +518,7 @@ var extend = function(protoProps, staticProps) {
 			return Backbone.View.prototype.initialize.call( this, options );
 		},
 		// #71 parse URL in runtime (optionally)
-		url: function( options ){
+		_url: function( options ){
 			// fallback
 			options = options || {};
 			var url = options.url || this.options.url;
