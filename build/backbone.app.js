@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Tue, 18 Feb 2014 00:48:29 GMT)
+ * Version: 0.9.5 (Tue, 18 Feb 2014 00:51:18 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -785,8 +785,9 @@ var extend = function(protoProps, staticProps) {
 
 			// creating html if required
 			if( this.template ){
+				var template = ( this.options.type ) ? this.template.get( this.options.type ) : this.template;
 				// use the options as data..
-				var html = this.template( this.options );
+				var html = template( this.options );
 				$(this.el).html( html );
 			}
 
