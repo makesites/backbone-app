@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Mon, 17 Feb 2014 22:05:20 GMT)
+ * Version: 0.9.5 (Tue, 18 Feb 2014 00:43:55 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -782,6 +782,14 @@ var extend = function(protoProps, staticProps) {
 			this._preRender();
 			// remove loading class (if any)
 			$(this.el).removeClass("loading");
+
+			// creating html if required
+			if( this.template ){
+				// use the options as data..
+				var html = template( this.options );
+				$(this.el).html( html );
+			}
+
 			this._postRender();
 		},
 
