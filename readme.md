@@ -15,12 +15,13 @@ The APP() includes methods that connect it to:
 * External html fragments
 * Layouts
 * Automated Session (with plugin)
+* Data Cache (with plugin)
 * Phonegap
 
 Also encapsulates a number of snippets, like:
 
 * [Backbone Extender](https://gist.github.com/tracend/5425415)
-* [Backbone.ready](https://gist.github.com/tracend/5617079)
+* [Backbone.Ready](https://gist.github.com/tracend/5617079)
 * [Backbone.Analytics](https://github.com/kendagriff/backbone.analytics)
 * [Backbone States](https://github.com/makesites/backbone-states)
 
@@ -50,7 +51,7 @@ The build script will combine the contents of the "lib/" folder and output the c
 
 ## Credits
 
-Created by Makis Tracend ( [@tracend](http://github.com/tracend) )
+Initiated by Makis Tracend ( [@tracend](http://github.com/tracend) )
 
 Distributed through [Makesites.org](http://makesites.org/)
 
