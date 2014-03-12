@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Tue, 18 Feb 2014 00:51:18 GMT)
+ * Version: 0.9.5 (Wed, 12 Mar 2014 05:16:56 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -198,7 +198,8 @@ var extend = function(protoProps, staticProps) {
 	APP.Model = Backbone.Model.extend({
 
 		options: {
-			autofetch: false
+			autofetch: false,
+			cache: false
 		},
 
 		// initialization
@@ -208,6 +209,11 @@ var extend = function(protoProps, staticProps) {
 			this.options = _.extend({}, this.options, options);
 			// set data if given
 			if( !_.isNull( model ) && !_.isEmpty( model ) ) this.set( model );
+			// restore cache
+			if( this.options.cache ){
+				var cache = this.cache();
+				if( cache ) this.set( cache );
+			}
 			// auto-fetch if no models are passed
 			if( this.options.autofetch && !_.isUndefined(this.url) ){
 				this.fetch();
@@ -219,10 +225,12 @@ var extend = function(protoProps, staticProps) {
 			return this.clear().set(this.defaults);
 		},
 
-		// cache all data to localstorage
-		cache: function(){
-			// construct a cache mechanism, using localstorage or other...
+		// Use Backbone.cache, if available
+		cache: Backbone.Model.prototype.cache || function(){
+			// optionally create your own custom a cache mechanism...
+			return false;
 		},
+
 		// Helper functions
 		// - check if the app is online
 		isOnline: function(){
@@ -259,9 +267,13 @@ var extend = function(protoProps, staticProps) {
 			return _.isFunction(object[prop]) ? object[prop]() : object[prop];
 		},
 
-		parse: function(data){
+		parse: function( data ){
 			var self = this;
 			setTimeout(function(){ self.trigger("fetch"); }, 200); // better way to trigger this after parse?
+			// cache response
+			if( this.options.cache ){
+				this.cache( data );
+			}
 			return data;
 		},
 
@@ -296,7 +308,8 @@ var extend = function(protoProps, staticProps) {
 
 		options: {
 			_synced : false,
-			autofetch: false
+			autofetch: false,
+			cache: false
 		},
 
 		model: APP.Model,
@@ -306,11 +319,17 @@ var extend = function(protoProps, staticProps) {
 			// save options for later
 			options = options || {};
 			this.options = _.extend({}, this.options, options);
+			// restore cache
+			if( this.options.cache ){
+				var cache = this.cache();
+				if( cache ) this.add( cache );
+			}
 			// auto-fetch if no models are passed
 			if( this.options.autofetch && _.isEmpty(models) && this.url ){
 				this.fetch();
 			}
 		},
+
 		/*
 		// DEPRECATED variables
 		attributes: {
@@ -386,9 +405,19 @@ var extend = function(protoProps, staticProps) {
 		},
 		*/
 
+		// Use Backbone.cache, if available
+		cache: Backbone.Collection.prototype.cache || function(){
+			// optionally create your own custom a cache mechanism...
+			return false;
+		},
+
 		parse: function(data){
 			var self = this;
 			setTimeout(function(){ self.trigger("fetch"); }, 200); // better way to trigger this after parse?
+			// cache results
+			if( this.options.cache ){
+				this.cache( data );
+			}
 			return data;
 		},
 
