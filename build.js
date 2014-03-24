@@ -30,7 +30,8 @@ concat({
 		'lib/app.view.js',
 		'lib/app.layout.js',
 		'lib/app.template.js',
-		'lib/app.router.js'
+		'lib/app.router.js',
+		'lib/app._loader.js'
 	],
 	dest : 'build/backbone.app.js'
 });

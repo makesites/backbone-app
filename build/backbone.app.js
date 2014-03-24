@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Wed, 12 Mar 2014 05:16:56 GMT)
+ * Version: 0.9.5 (Mon, 24 Mar 2014 04:40:31 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -10,7 +10,7 @@
 if( !window.APP ) (function(_, Backbone) {
 
 	// App contructor
-	APP = function(){
+	var APP = function(){
 		// get config
 		var options = arguments[0] || {};
 		// find router
@@ -38,6 +38,9 @@ if( !window.APP ) (function(_, Backbone) {
 	APP.Views = {};
 	APP.Layouts = {};
 	APP.Templates = {};
+
+	// save in the global namespace
+	window.APP = APP;
 
 })(this._, this.Backbone);
 
@@ -1248,3 +1251,22 @@ var extend = function(protoProps, staticProps) {
 	});
 
 })(this._, this.Backbone);
+
+(function(window) {
+
+	var APP = window.APP;
+
+	// Support module loaders
+	if ( typeof module === "object" && module && typeof module.exports === "object" ) {
+		// Expose as module.exports in loaders that implement CommonJS module pattern.
+		module.exports = APP;
+	} else {
+		// Register as a named AMD module, used in Require.js
+		if ( typeof define === "function" && define.amd ) {
+			//define( "backbone.ui.slideshow", [], function () { return Slideshow; } );
+			//define( ['jquery', 'underscore', 'backbone'], function () { return Slideshow; } );
+			define( [], function () { return APP; } );
+		}
+	}
+
+})(this.window);
