@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Sun, 30 Mar 2014 05:53:27 GMT)
+ * Version: 0.9.5 (Sun, 30 Mar 2014 06:22:24 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -28,8 +28,8 @@ if( !window.APP ) (function(_, Backbone) {
 		}
 		// call the router or fallback to the default
 		if( options.require && !router ){
-			router = "default"; // support more than one routers?
-			require( [ "app/controllers/"+ router ], function( Router ){
+			router = (typeof options.require == "string") ? options.require : "default"; // support custom path?
+			require( [ router ], function( Router ){
 				// what if there's no router???
 				var controller = new Router();
 				if( callback ) callback( controller );
