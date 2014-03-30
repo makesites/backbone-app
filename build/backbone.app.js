@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Mon, 24 Mar 2014 04:40:31 GMT)
+ * Version: 0.9.5 (Sun, 30 Mar 2014 05:53:27 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -13,6 +13,7 @@ if( !window.APP ) (function(_, Backbone) {
 	var APP = function(){
 		// get config
 		var options = arguments[0] || {};
+		var callback = arguments[1] || false;
 		// find router
 		var router = false;
 		// check URIs
@@ -26,9 +27,24 @@ if( !window.APP ) (function(_, Backbone) {
 			if(typeof(APP.Routers[router]) == "function") break;
 		}
 		// call the router or fallback to the default
-		var controller = (router && APP.Routers[router]) ? new APP.Routers[router]( options ) : new APP.Routers.Default( options );
-		// return controller so it's accessible through the app global
-		return controller;
+		if( options.require && !router ){
+			router = "default"; // support more than one routers?
+			require( [ "app/controllers/"+ router ], function( Router ){
+				// what if there's no router???
+				var controller = new Router();
+				if( callback ) callback( controller );
+			});
+			return APP;
+		} else {
+			var controller = (router && APP.Routers[router]) ? new APP.Routers[router]( options ) : new APP.Routers.Default( options );
+			// return controller so it's accessible through the app global
+			if( callback ) {
+				callback( controller );
+				return APP;
+			} else {
+				return controller;
+			}
+		}
 	};
 
 	// Namespace definition
@@ -43,7 +59,6 @@ if( !window.APP ) (function(_, Backbone) {
 	window.APP = APP;
 
 })(this._, this.Backbone);
-
 // Backbone Extender
 // Source: https://gist.github.com/tracend/5425415
 (function(_, Backbone){
