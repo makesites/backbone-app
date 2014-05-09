@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Sun, 30 Mar 2014 06:22:24 GMT)
+ * Version: 0.9.5 (Fri, 09 May 2014 08:13:07 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -894,9 +894,10 @@ var extend = function(protoProps, staticProps) {
 		},
 
 		findLink: function (target) {
-			var url = (target.tagName != "A") ? $(target).closest("a").attr("href") : $(target).attr("href");
-			// filter empty URLs
-			return ( _.isEmpty(url) || url.substr(0,1) == "#" ) ? false : url;
+			var $el = (target.tagName != "A") ? $(target).closest("a") : $(target);
+			var url = $el.attr("href");
+			// filter some URLs
+			return ( _.isEmpty(url) || url.substr(0,1) == "#" || $el.attr("target") ) ? false : url;
 		},
 
 		// Internal methods
@@ -1264,6 +1265,10 @@ var extend = function(protoProps, staticProps) {
 		}
 
 	});
+
+
+	// default router (ultimate fallback..)
+	APP.Routers.Default = APP.Router;
 
 })(this._, this.Backbone);
 
