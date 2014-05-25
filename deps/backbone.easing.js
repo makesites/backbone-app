@@ -26,7 +26,7 @@
 		},
 
 		// convert to model, maybe...
-		data: {
+		_transitionData: {
 			start: 0,
 			end: 0,
 			easing: false,
@@ -47,18 +47,22 @@
 
 		transitionData: function( target ){
 			// variables
-			var start, end;
+			var data, start, end;
 
 			// record data
 			var now = _.now();
-			return {
+			data = {
 				start: now,
 				end: now + (this.options.duration * 1000),
 				easing: easing[this.options.ease],
 				startPos: start,
 				endPos: end,
 				pos: start
-			}
+			};
+			//save for later
+			this._transitionData = data;
+
+			return data;
 		},
 
 		transitionPos: function( pos ){
@@ -71,7 +75,7 @@
 
 		transitionStart: function( target ){
 
-			this.data = this.transitionData( target );
+			this.transitionData( target );
 			// add transitio in the queue
 			this.tick.add( this.transition );
 
@@ -79,29 +83,30 @@
 
 		transition: function(){
 			var now = _.now();
+			var data = this._transitionData;
 			// condition #1: if reached our destination...
-			if( now > this.data.end ) return this.transitionEnd();
+			if( now > data.end ) return this.transitionEnd();
 			// condition #2: if the position has changed by another "force"
-			if( this.data.pos && this.data.pos !== this.transitionPos() ) return this.transitionEnd();
+			if( data.pos && data.pos !== this.transitionPos() ) return this.transitionEnd();
 
-			var start = this.data.startPos;
-			var end = this.data.endPos;
-			var easingFunc = this.data.easing;
-			var time = ( this.data.end - now ) / (this.options.duration * 1000);
+			var start = data.startPos;
+			var end = data.endPos;
+			var easingFunc = data.easing;
+			var time = ( data.end - now ) / (this.options.duration * 1000);
 
 			var pos = Math.round( start + ( end - start ) * (1 -easingFunc( time ) ) );
 
 			this.transitionPos( pos );
 
 			// save pos for later
-			this.data.pos = pos;
+			data.pos = pos;
+			this._transitionData = data;
 		},
 
 		transitionEnd: function() {
 			// remove transition
 			this.tick.remove( this.transition );
 			// can you stop tick.js?
-
 		}
 
 	});
