@@ -31,7 +31,9 @@ concat({
 		'lib/app.layout.js',
 		'lib/app.template.js',
 		'lib/app.router.js',
-		'lib/app._loader.js'
+		'lib/app._loader.js',
+		// third-party deps
+		'deps/backbone.easing.js'
 	],
 	dest : 'build/backbone.app.js'
 });
