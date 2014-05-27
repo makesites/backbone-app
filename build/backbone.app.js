@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Sun, 25 May 2014 05:52:25 GMT)
+ * Version: 0.9.5 (Tue, 27 May 2014 09:35:48 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -60,30 +60,56 @@ if( !window.APP ) (function(_, Backbone) {
 
 })(this._, this.Backbone);
 // Backbone Extender
+// Extending objects like events and options when using extend() in main constructors
+//
 // Source: https://gist.github.com/tracend/5425415
 (function(_, Backbone){
 
-var origExtend = Backbone.Model.extend;
+	var origExtend = Backbone.Model.extend;
 
-var extend = function(protoProps, staticProps) {
+	var extend = function(protoProps, staticProps) {
 
-	var parent = this;
+		var parent = this;
 
-	if (protoProps){
-		_.each(protoProps, function(value, key){
-			// modify only the objects that are available in the parent
-			if( key in parent.prototype && !(value instanceof Function) && !(parent.prototype[key] instanceof Function) && (parent.prototype[key] instanceof Object) ){
-				// the routes need to be processed in reverse (as order matters)
-				protoProps[key] = ( key == "routes" ) ? _.extend({}, value, parent.prototype[key]) : _.extend({}, parent.prototype[key], value );
-			}
-		});
-	}
+		if (protoProps){
+			_.each(protoProps, function(value, key){
+				// exit now if the types can't be extended
+				if( typeof value == "string" || typeof value == "boolean" ) return;
+				// modify only the objects that are available in the parent
+				if( key in parent.prototype && !(value instanceof Function) && !(parent.prototype[key] instanceof Function) ){
+					protoProps[key] = _.extend({}, parent.prototype[key], value);
+				}
+			});
+		}
 
-	return origExtend.call(this, protoProps, staticProps);
-};
+		return origExtend.call(this, protoProps, staticProps);
+	};
 
 	// Set up inheritance for the model, collection, router, view and history.
 	Backbone.Model.extend = Backbone.Collection.extend = Backbone.Router.extend = Backbone.View.extend = extend;
+
+	// Plus add a whildcard _extend_ that behaves like Array's concat
+	Backbone.extend = function(){
+		var classes = arguments;
+		var Parent = false;
+		// loop through classes
+		for( var i in classes ){
+			var Class = classes[i];
+			// first time...
+			if( !Parent) {
+				Parent = Class;
+				continue;
+			}
+			var methods = ( Class.prototype ) ? Class.prototype : Class;
+			// only object accepted (lookup instance of Backbone...?)
+			if(typeof methods !== "object" ) continue;
+
+			// extend parent
+			Parent = Parent.extend( methods );
+		}
+		return Parent;
+	};
+
 
 })(this._, this.Backbone);
 
