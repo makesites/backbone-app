@@ -33,7 +33,7 @@ concat({
 		'lib/app.router.js',
 		'lib/app._loader.js',
 		// third-party deps
-		'deps/backbone.easing.js'
+		'deps/backbone.easing.js', 
 		'deps/backbone.analytics.js'
 	],
 	dest : 'build/backbone.app.js'
