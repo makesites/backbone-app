@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Tue, 27 May 2014 09:35:48 GMT)
+ * Version: 0.9.5 (Thu, 29 May 2014 05:51:00 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -178,25 +178,6 @@ if( !window.APP ) (function(_, Backbone) {
 	return Backbone;
 
 })(window, document, this.Backbone);
-
-// Backbone.Analytics
-// Source: https://github.com/kendagriff/backbone.analytics
-(function() {
-	var loadUrl = Backbone.History.prototype.loadUrl;
-
-	Backbone.History.prototype.loadUrl = function(fragmentOverride) {
-		var matched = loadUrl.apply(this, arguments),
-				gaFragment = this.fragment;
-		if (!/^\//.test(gaFragment)) gaFragment = '/' + gaFragment;
-		if(typeof window._gaq !== "undefined") window._gaq.push(['_trackPageview', gaFragment]);
-		if(typeof window.GoogleAnalyticsObject !== "undefined"){
-			var ga = window.GoogleAnalyticsObject;
-			window[ga]('send', 'pageview', gaFragment);
-		}
-		return matched;
-	};
-
-}).call(this);
 
 /*
  * Backbone States
@@ -1777,3 +1758,38 @@ window.Tick = Tick;
 
 
 })(this.window, this.$, this._, this.Backbone, this.APP);
+
+(function(window, Backbone) {
+
+  'use strict';
+
+  var loadUrl = Backbone.History.prototype.loadUrl;
+
+  Backbone.History.prototype.loadUrl = function(fragmentOverride) {
+    var matched = loadUrl.apply(this, arguments),
+        gaFragment = this.fragment;
+
+    if (!/^\//.test(gaFragment)) {
+      gaFragment = '/' + gaFragment;
+    }
+
+    // legacy version
+    if (typeof window._gaq !== "undefined") {
+      window._gaq.push(['_trackPageview', gaFragment]);
+    }
+
+    // Analytics.js
+    var ga;
+    if (window.GoogleAnalyticsObject && window.GoogleAnalyticsObject !== 'ga') {
+      ga = window.GoogleAnalyticsObject;
+    } else {
+      ga = window.ga;
+    }
+
+    if (typeof ga !== 'undefined') {
+      ga('send', 'pageview', gaFragment);
+    }
+    return matched;
+  };
+
+})(this.window, this.Backbone);
