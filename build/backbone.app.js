@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Thu, 29 May 2014 05:51:00 GMT)
+ * Version: 0.9.5 (Thu, 05 Jun 2014 04:24:46 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1300,7 +1300,7 @@ if( !window.APP ) (function(_, Backbone) {
 
 /**
  * @name backbone.easing
- * 
+ *
  *
  * Version: 0.1.0 (Sun, 25 May 2014 05:51:42 GMT)
  * Source: http://github.com/makesites/backbone-easing
@@ -1438,9 +1438,10 @@ _.mixin({
 // --------------------------------------------------
 (function (name, definition) {
   /*global define module*/
-  if (typeof define == 'function') define(definition);
-  else if (typeof module != 'undefined') module.exports = definition;
-  else this[name] = definition;
+  //if (typeof define == 'function') define(definition);
+  //else if (typeof module != 'undefined') module.exports = definition;
+  //else this[name] = definition;
+  window[name] = definition;
 }('easing', {
   easeInQuad: function(pos) {
     return Math.pow(pos, 2);
