@@ -1,6 +1,6 @@
 /**
  * @name backbone.easing
- * 
+ *
  *
  * Version: 0.1.0 (Sun, 25 May 2014 05:51:42 GMT)
  * Source: http://github.com/makesites/backbone-easing
@@ -138,9 +138,10 @@ _.mixin({
 // --------------------------------------------------
 (function (name, definition) {
   /*global define module*/
-  if (typeof define == 'function') define(definition);
-  else if (typeof module != 'undefined') module.exports = definition;
-  else this[name] = definition;
+  //if (typeof define == 'function') define(definition);
+  //else if (typeof module != 'undefined') module.exports = definition;
+  //else this[name] = definition;
+  window[name] = definition;
 }('easing', {
   easeInQuad: function(pos) {
     return Math.pow(pos, 2);
