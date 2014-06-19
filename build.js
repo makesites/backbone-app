@@ -23,7 +23,6 @@ _handlebars.registerHelper('license', function(items){
  // - concatinate all files
 concat({
 	src : [
-		'lib/app._construct.js',
 		'lib/app.helpers.js',
 		'lib/app.model.js',
 		'lib/app.collection.js',
@@ -33,7 +32,7 @@ concat({
 		'lib/app.router.js',
 		'lib/app._loader.js',
 		// third-party deps
-		'deps/backbone.easing.js', 
+		'deps/backbone.easing.js',
 		'deps/backbone.analytics.js'
 	],
 	dest : 'build/backbone.app.js'
@@ -60,10 +59,13 @@ function concat(opts) {
 			return _fs.readFileSync(filePath, FILE_ENCODING);
 		});
 
-	var template = _handlebars.compile( lib.join(EOL) );
+	var wrapper = _fs.readFileSync('lib/app._construct.js', FILE_ENCODING);
+
+	var template = _handlebars.compile( wrapper );
 
 	//reuse package.json data and add build date
 	var data = JSON.parse( _fs.readFileSync('package.json', FILE_ENCODING) );
+	data.lib = lib.join(EOL);
 	data.build_date = (new Date()).toUTCString();
 
 	// Save uncompressed file
@@ -71,7 +73,6 @@ function concat(opts) {
 	console.log(' '+ distPath +' built.');
 
 }
-
 
 function uglify(srcPath, distPath) {
 	/*
@@ -118,4 +119,3 @@ function lint(path, callback) {
 		callback();
 	}
 }
-
