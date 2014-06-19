@@ -2,15 +2,33 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.5 (Thu, 05 Jun 2014 04:24:46 GMT)
+ * Version: 0.9.5 (Thu, 19 Jun 2014 06:37:01 GMT)
  * @license Apache License, Version 2.0
  */
 
- // stop processing if APP is already part of the namespace
-if( !window.APP ) (function(_, Backbone) {
+(function (lib) {
+
+	//"use strict";
+
+	if (typeof define === 'function' && define.amd) {
+		// AMD. Register as an anonymous module.
+		define(['jquery', 'underscore', 'backbone'], lib);
+	} else {
+		// Browser globals
+		lib($, _, Backbone);
+	}
+}(function ($, _, Backbone) {
+
+	//"use strict";
+	// better way to define global scope?
+	var window = this.window || {};
+	var APP = window.APP || false;
+
+	// stop processing if APP is already part of the namespace
+	if( !APP ) (function(_, Backbone) {
 
 	// App contructor
-	var APP = function(){
+	APP = function(){
 		// get config
 		var options = arguments[0] || {};
 		var callback = arguments[1] || false;
@@ -55,10 +73,9 @@ if( !window.APP ) (function(_, Backbone) {
 	APP.Layouts = {};
 	APP.Templates = {};
 
-	// save in the global namespace
-	window.APP = APP;
+	})(this._, this.Backbone);
 
-})(this._, this.Backbone);
+
 // Backbone Extender
 // Extending objects like events and options when using extend() in main constructors
 //
@@ -118,7 +135,7 @@ if( !window.APP ) (function(_, Backbone) {
 (function(_, Backbone, $) {
 
 	// Helpers
-	// this is to enable  syntax to simple _.template() calls
+	// this is to enable {{moustache}} syntax to simple _.template() calls
 	_.templateSettings = {
 		interpolate : /\{\{(.+?)\}\}/g,
 		variable : "."
@@ -217,7 +234,7 @@ if( !window.APP ) (function(_, Backbone) {
 
 })(window, document, this.Backbone);
 
-(function(_, Backbone) {
+(function(_, Backbone, APP) {
 
 	// **Main constructors**
 	APP.Model = Backbone.Model.extend({
@@ -326,8 +343,8 @@ if( !window.APP ) (function(_, Backbone) {
 		}
 	});
 
-})(this._, this.Backbone);
-(function(_, Backbone) {
+})(_, Backbone, APP);
+(function(_, Backbone, APP) {
 
 	APP.Collection = Backbone.Collection.extend({
 
@@ -479,8 +496,8 @@ if( !window.APP ) (function(_, Backbone) {
 		}
 	});
 
-})(this._, this.Backbone);
-(function(_, Backbone, $) {
+})(_, Backbone, APP);
+(function(_, Backbone, $, APP) {
 
 	APP.View =  Backbone.View.extend({
 		options : {
@@ -780,9 +797,9 @@ if( !window.APP ) (function(_, Backbone) {
 
 	});
 
-})(this._, this.Backbone, this.jQuery);
+})(_, Backbone, $, APP);
 
-(function(_, Backbone, $) {
+(function(_, Backbone, $, APP) {
 
 	/* Main layout */
 	APP.Layout = Backbone.View.extend({
@@ -997,9 +1014,9 @@ if( !window.APP ) (function(_, Backbone) {
 
 	});
 
-})(this._, this.Backbone, this.jQuery);
+})(_, Backbone, $, APP);
 
-(function(_, Backbone, $) {
+(function(_, Backbone, $, APP) {
 
 	APP.Template = Backbone.Model.extend({
 		initialize: function(html, options){
@@ -1054,9 +1071,9 @@ if( !window.APP ) (function(_, Backbone) {
 	});
 
 
-})(this._, this.Backbone, this.jQuery);
+})(_, Backbone, $, APP);
 
-(function(_, Backbone) {
+(function(_, Backbone, APP) {
 
 	APP.Router = Backbone.Router.extend({
 		// app configuration:
@@ -1277,26 +1294,7 @@ if( !window.APP ) (function(_, Backbone) {
 	// default router (ultimate fallback..)
 	APP.Routers.Default = APP.Router;
 
-})(this._, this.Backbone);
-
-(function(window) {
-
-	var APP = window.APP;
-
-	// Support module loaders
-	if ( typeof module === "object" && module && typeof module.exports === "object" ) {
-		// Expose as module.exports in loaders that implement CommonJS module pattern.
-		module.exports = APP;
-	} else {
-		// Register as a named AMD module, used in Require.js
-		if ( typeof define === "function" && define.amd ) {
-			//define( "backbone.ui.slideshow", [], function () { return Slideshow; } );
-			//define( ['jquery', 'underscore', 'backbone'], function () { return Slideshow; } );
-			define( [], function () { return APP; } );
-		}
-	}
-
-})(this.window);
+})(_, Backbone, APP);
 
 /**
  * @name backbone.easing
@@ -1794,3 +1792,12 @@ window.Tick = Tick;
   };
 
 })(this.window, this.Backbone);
+
+
+
+	// save in the global namespace
+	window.APP = APP;
+
+	return window.APP;
+
+}));
