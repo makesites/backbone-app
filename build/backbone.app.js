@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Fri, 11 Jul 2014 06:54:55 GMT)
+ * Version: 0.9.6 (Sat, 19 Jul 2014 01:17:17 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -268,6 +268,18 @@
 			if( this.options.autofetch && !_.isUndefined(this.url) ){
 				this.fetch();
 			}
+		},
+
+		// add is like set but only if not available
+		add: function( obj ){
+			var self = this;
+			var data = {};
+			_.each( obj, function( item, key ){
+				if( _.isUndefined( self.get(key) ) ){
+					data[key] = item;
+				}
+			});
+			this.set( data );
 		},
 
 		// #63 reset model to its default values
