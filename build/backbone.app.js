@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Sat, 19 Jul 2014 01:17:17 GMT)
+ * Version: 0.9.6 (Wed, 30 Jul 2014 21:35:57 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -556,7 +556,7 @@
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
 			//
-			_.bindAll(this, 'render', 'clickExternal', 'postRender');
+			_.bindAll(this, 'render', 'clickExternal', 'postRender', '_url', '_toJSON');
 			// #73 - optionally saving options
 			if( this.options.saveOptions ) this.options = _.extend(this.options, options);
 			// find the data
@@ -626,9 +626,7 @@
 			this._preRender();
 			//
 			var template = ( this.options.type ) ? this.template.get( this.options.type ) : this.template;
-			var data = this._getJSON();
-			// #43 - adding options to the template data
-			var json = ( this.options.inRender ) ? { data : data, options: this.options } : data;
+			var data = this.toJSON();
 			// #19 - checking instance of template before executing as a function
 			var html = ( template instanceof Function ) ? template( json ) : template;
 			// #64 find the render target
@@ -704,6 +702,12 @@
 			return this.off( types, null, fn );
 		},
 
+		toJSON: function(){
+			var data = this._toJSON();
+			// #43 - adding options to the template data
+			return ( this.options.inRender ) ? { data : data, options: this.options } : data;
+		},
+
 		// Internal methods
 
 		_initRender: function(){
@@ -726,7 +730,7 @@
 			// make sure the container is presented
 			if( !this.options.silentRender ) $(this.el).show();
 			// remove loading state (if data has arrived)
-			if( !this.options.data || (this.options.data && !_.isEmpty(this._getJSON()) ) ){
+			if( !this.options.data || (this.options.data && !_.isEmpty(this._toJSON()) ) ){
 				$(this.el).removeClass("loading");
 				// set the appropriate flag
 				this.state.loaded = true;
@@ -738,10 +742,10 @@
 		},
 
 		// get the JSON of the data
-		_getJSON: function(){
+		_toJSON: function(){
 			if( !this.options.data ) return {};
 			if( this.data.toJSON ) return this.data.toJSON();
-			return this.data;
+			return this.data; // in case the data is a JSON...
 		},
 
 		_findContainer: function(){
