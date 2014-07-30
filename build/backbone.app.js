@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Wed, 30 Jul 2014 21:35:57 GMT)
+ * Version: 0.9.6 (Wed, 30 Jul 2014 23:09:59 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -628,7 +628,7 @@
 			var template = ( this.options.type ) ? this.template.get( this.options.type ) : this.template;
 			var data = this.toJSON();
 			// #19 - checking instance of template before executing as a function
-			var html = ( template instanceof Function ) ? template( json ) : template;
+			var html = ( template instanceof Function ) ? template( data ) : template;
 			// #64 find the render target
 			var $container = this._findContainer();
 			// #66 if parent is the render target, html is the element
