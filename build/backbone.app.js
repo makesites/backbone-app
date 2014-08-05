@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Wed, 30 Jul 2014 23:09:59 GMT)
+ * Version: 0.9.6 (Tue, 05 Aug 2014 22:05:53 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1228,9 +1228,17 @@
 			if( this.options.location ){
 				this._geoLocation();
 			}
-			// - setup session (+config), if namespace is available
-			if( APP.Session ) this.session = new APP.Session({}, ( this.options.session || {} ));
+			// - setup session
+			this._setupSession();
 		},
+
+		// - setup session, if namespace is available
+		_setupSession: function(){
+			// fallback to backbone.session
+			var Session = APP.Session || Backbone.Session || false;
+			if( Session ) this.session = new Session({}, ( this.options.session || {} ));
+		},
+
 		// set the api url for all ajax requests
 		_ajaxPrefilter: function( api ){
 			var session = this.session || false;
