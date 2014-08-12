@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Tue, 05 Aug 2014 22:05:53 GMT)
+ * Version: 0.9.6 (Tue, 12 Aug 2014 05:41:07 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -638,7 +638,10 @@
 				html = this.el;
 			}
 			if( this.options.append ){
-				$container.append( html );
+				var $el = $( html );
+				$container.append( $el );
+				// save reference to the appended element
+				if( !this.el ) this.el = $el;
 			} else {
 				$container.html( html );
 			}
