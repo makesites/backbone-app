@@ -388,11 +388,14 @@ Tick.prototype = {
 			if( typeof item.fn !== "function") continue;
 			// restrict execution if not time yet
 			var step = (timestamp % item.interval);
-			if( step === 0 || item.run + item.interval > timestamp) continue;
+			//if( step === 0 || item.run + item.interval > timestamp) continue;
+			var asc = (step > this.queue[i].step);
+			this.queue[i].step = step; // store step
+			if( asc ) continue; // still ascending...
 			// run
 			item.fn(); // context?
-			// record last run
 			// condition in case the item was released in the meantime...
+			// record last run
 			if( this.queue[i] ) this.queue[i].run = timestamp;
 		}
 	},
