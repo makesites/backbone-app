@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Tue, 12 Aug 2014 10:34:46 GMT)
+ * Version: 0.9.6 (Tue, 07 Oct 2014 05:51:08 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -45,6 +45,7 @@
 		//
 		if( options.require ){
 			// use require.js
+			var routerDefault = options.routePath +"default";
 			if(typeof options.require == "string"){
 				router = options.require;
 			} else {
@@ -52,9 +53,25 @@
 				router += ( !_.isEmpty(path[0]) ) ? path[0] : "default";
 			}
 			require( [ router ], function( controller ){
+				if( controller ){
+					callback( controller );
+				}
+			}, function (err) {
+				//The errback, error callback
+				//The error has a list of modules that failed
+				var failed = err.requireModules && err.requireModules[0];
 				// what if there's no controller???
-				callback( controller );
+				if( failed == router ){
+					// fallback to the default controller
+					require( [ routerDefault ], function( controller ){
+						callback( controller );
+					});
+				} else {
+					//Some other error. Maybe show message to the user.
+					throw err;
+				}
 			});
+
 			return APP;
 
 		} else {
