@@ -22,6 +22,7 @@ Also encapsulates a number of snippets, like:
 
 * [Backbone Extender](https://gist.github.com/tracend/5425415)
 * [Backbone.Ready](https://gist.github.com/tracend/5617079)
+* [Backbone.inherit](https://gist.github.com/tracend/8681804)
 * [Backbone.Analytics](https://github.com/kendagriff/backbone.analytics)
 * [Backbone States](https://github.com/makesites/backbone-states)
 

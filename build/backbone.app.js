@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Tue, 07 Oct 2014 05:51:08 GMT)
+ * Version: 0.9.6 (Tue, 21 Oct 2014 10:57:07 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1847,6 +1847,42 @@ window.Tick = Tick;
   };
 
 })(this.window, this.Backbone);
+
+(function(Backbone){
+	
+	Backbone.inherit = function(){
+		var classes = Array.prototype.slice.call(arguments, 0);
+		// prerequisites
+		if( !classes.length ) return;
+		var Class = classes.pop();
+		
+		// loop through objects
+		for( var i in classes){
+			var Child = classes[i];
+			var Parent = Class;
+			Class = Parent.extend( Child.prototype );
+			// Override the parent constructor
+			// Child prototype.constructor
+			/*
+			var Child = function(){
+				Parent.apply(this, arguments);
+			};
+			*/
+		}
+		// add local inherit 
+		Class.prototype.inherit = inherit;
+		return Class;
+	};
+
+	// local inherit
+	function inherit(){
+		var classes = arguments;
+		// include this in classes (at the front)
+		classes = classes.unshift(this);
+		Backbone.inherit.apply( this, arguments );
+	}
+		
+})(this.Backbone);
 
 
 
