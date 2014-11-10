@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Tue, 21 Oct 2014 10:57:07 GMT)
+ * Version: 0.9.6 (Mon, 10 Nov 2014 13:10:52 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -653,6 +653,10 @@
 				this.el = this.$el = $(html);
 				// fix to ensure what's inserted in the dom is 'connected' to element
 				html = this.el;
+			}
+			// make sure the element is attached to the parent
+			if( this.options.parentEl && !$(this.options.parentEl).find( this.el ).length ){
+				$(this.options.parentEl).append( $(this.el) );
 			}
 			if( this.options.append ){
 				var $el = $( html );
