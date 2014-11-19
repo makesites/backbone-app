@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Mon, 10 Nov 2014 13:10:52 GMT)
+ * Version: 0.9.6 (Wed, 19 Nov 2014 19:26:44 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -646,26 +646,26 @@
 			var data = this.toJSON();
 			// #19 - checking instance of template before executing as a function
 			var html = ( template instanceof Function ) ? template( data ) : template;
+			var $el;
 			// #64 find the render target
 			var $container = this._findContainer();
 			// #66 if parent is the render target, html is the element
 			if( this.options.parentEl && (this.options.parentEl === this.options.renderTarget) ){
 				this.el = this.$el = $(html);
-				// fix to ensure what's inserted in the dom is 'connected' to element
+				// FIX: ensure what's inserted in the dom is the same reference as the element
 				html = this.el;
 			}
-			// make sure the element is attached to the parent
-			if( this.options.parentEl && !$(this.options.parentEl).find( this.el ).length ){
-				$(this.options.parentEl).append( $(this.el) );
-			}
 			if( this.options.append ){
-				var $el = $( html );
+				$el = $( html );
 				$container.append( $el );
-				// save reference to the appended element
-				if( !this.el ) this.el = $el;
+			} else if( this.options.prepend ){
+				$el = $( html );
+				$container.prepend( $el );
 			} else {
 				$container.html( html );
 			}
+			// saving element reference
+			if( !this.el ) this.el = $el;
 			// execute post-render actions
 			this._postRender();
 		},
@@ -782,10 +782,14 @@
 			} else if ( typeof this.options.renderTarget == "string" ){
 
 				container = $(this.el).find(this.options.renderTarget).first();
+				if( !container.length ){
+					container = $(this.options.renderTarget).first(); // assume this always exists...
+				}
 
 			} else if( typeof this.options.renderTarget == "object" ){
 
 				container = this.options.renderTarget;
+
 			}
 
 			// convert into a jQuery object if needed
@@ -888,6 +892,8 @@
 				this.template = new APP.Template(null, { url : url });
 				if( this.options.autorender ) this.template.bind("loaded", this.render);
 			}
+			// saving data
+			if( options.data ) this.data = options.data;
 
 			// initiate parent
 			return Backbone.View.prototype.initialize.call( this, options );
