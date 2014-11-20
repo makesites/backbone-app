@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Wed, 19 Nov 2014 19:26:44 GMT)
+ * Version: 0.9.6 (Thu, 20 Nov 2014 14:17:10 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -636,6 +636,8 @@
 		preRender: function(){
 		},
 
+		// Render view
+		// placing markup in the DOM
 		render: function(){
 			// prerequisite
 			if( !this.template ) return;
@@ -649,23 +651,23 @@
 			var $el;
 			// #64 find the render target
 			var $container = this._findContainer();
-			// #66 if parent is the render target, html is the element
-			if( this.options.parentEl && (this.options.parentEl === this.options.renderTarget) ){
-				this.el = this.$el = $(html);
-				// FIX: ensure what's inserted in the dom is the same reference as the element
-				html = this.el;
-			}
-			if( this.options.append ){
+			// saving element reference
+			if( !this.el ){
 				$el = $( html );
+				this.el = this.$el = $el;
+			}
+			// make sure the element is attached to the DOM
+			this._inDOM();
+			// ways to insert the markup
+			if( this.options.append ){
+				$el = $el || $( html );
 				$container.append( $el );
 			} else if( this.options.prepend ){
-				$el = $( html );
+				$el = $el || $( html );
 				$container.prepend( $el );
 			} else {
 				$container.html( html );
 			}
-			// saving element reference
-			if( !this.el ) this.el = $el;
 			// execute post-render actions
 			this._postRender();
 		},
@@ -772,6 +774,10 @@
 			return this.data; // in case the data is a JSON...
 		},
 
+		// - container is defined in three ways
+		// * renderTarget is the element
+		// * renderTarget inside the element
+		// * renderTarget outside the element (bad practice?)
 		_findContainer: function(){
 			// by default
 			var container = this.el;
@@ -779,7 +785,7 @@
 			if ( !this.options.renderTarget ){
 				// do nothing more
 
-			} else if ( typeof this.options.renderTarget == "string" ){
+			} else if( typeof this.options.renderTarget == "string" ){
 
 				container = $(this.el).find(this.options.renderTarget).first();
 				if( !container.length ){
@@ -795,6 +801,26 @@
 			// convert into a jQuery object if needed
 			return ( container instanceof jQuery) ? container : $(container);
 
+		},
+
+		// checks if an element exists in the DOM
+		_inDOM: function( $el ){
+			// fallbacks
+			$el = $el || this.$el;
+			// prerequisites
+			if( !$el ) return false;
+			// variables
+			var exists = false;
+			var parent = this.options.parentEl || "body";
+			// check parent element
+			exists = $(this.options.parentEl).find( $el ).length;
+			if( exists ) return true;
+			// el not in parent el
+			if( this.options.parentPrepend ){
+				$(this.options.parentEl).prepend( $el );
+			} else {
+				$(this.options.parentEl).append( $el );
+			}
 		},
 
 		// - When navigate is triggered
@@ -1166,7 +1192,8 @@
 			online: navigator.onLine,
 			// find browser type
 			browser: function(){
-				if( $.browser.safari && /chrome/.test(navigator.userAgent.toLowerCase()) ) return 'chrome';
+				if( /chrome/.test(navigator.userAgent.toLowerCase()) ) return 'chrome';
+				if( /firefox/.test(navigator.userAgent.toLowerCase()) ) return 'firefox';
 				if(/(iPhone|iPod).*OS 5.*AppleWebKit.*Mobile.*Safari/.test(navigator.userAgent) ) return 'ios';
 				return 'other';
 			},
