@@ -2,9 +2,10 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Thu, 20 Nov 2014 14:17:10 GMT)
+ * Version: 0.9.6 (Wed, 26 Nov 2014 06:37:50 GMT)
  * @license Apache License, Version 2.0
  */
+
 
 (function (lib) {
 
@@ -12,10 +13,15 @@
 
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
-		define(['jquery', 'underscore', 'backbone'], lib);
+		var deps = ['jquery', 'underscore', 'backbone'];
+		define("backbone.app", deps, lib); // give the module a name
+	} else if ( typeof module === "object" && module && typeof module.exports === "object" ){
+		// Expose as module.exports in loaders that implement CommonJS module pattern.
+		module.exports = lib;
 	} else {
 		// Browser globals
-		lib($, _, Backbone);
+		var Query = window.jQuery || window.Zepto || window.vQuery;
+		lib(Query, window._, window.Backbone, window.APP);
 	}
 }(function ($, _, Backbone) {
 
@@ -1922,10 +1928,13 @@ window.Tick = Tick;
 })(this.Backbone);
 
 
+	// If there is a window object, that at least has a document property
+	if( typeof window === "object" && typeof window.document === "object" ){
+		// save in the global namespace
+		window.APP = APP;
+	}
 
-	// save in the global namespace
-	window.APP = APP;
-
-	return window.APP;
+	// for module loaders:
+	return APP;
 
 }));
