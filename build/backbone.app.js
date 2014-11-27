@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Thu, 27 Nov 2014 07:29:03 GMT)
+ * Version: 0.9.6 (Thu, 27 Nov 2014 07:31:34 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1174,8 +1174,8 @@
 			"": "index",
 			"_=_": "_fixFB",
 			"access_token=:token": "access_token",
-			"logout": "logout",
-			"*path"  : "_404"
+			"logout": "logout"
+			//"*path"  : "_404"
 		},
 
 		data: new Backbone.Model(),
