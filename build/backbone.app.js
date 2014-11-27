@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.6 (Wed, 26 Nov 2014 06:37:50 GMT)
+ * Version: 0.9.6 (Thu, 27 Nov 2014 07:29:03 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1347,8 +1347,9 @@
 		// - overriding default _bindRoutes
 		_bindRoutes: function() {
 			if (!this.routes) return;
+			this.routes = _.result(this, 'routes');
 			var route, routes = _.keys(this.routes);
-			while (typeof (route = routes.pop()) !== "undefined") {
+			while ((route = routes.pop()) !== null){
 				var name = this.routes[route];
 				// when we find the route we execute the preRoute
 				// with a reference to the route as a callback...
