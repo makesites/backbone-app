@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.7 (Mon, 01 Dec 2014 04:38:41 GMT)
+ * Version: 0.9.7 (Tue, 02 Dec 2014 05:19:37 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1349,7 +1349,7 @@
 			if (!this.routes) return;
 			this.routes = _.result(this, 'routes');
 			var route, routes = _.keys(this.routes);
-			while ((route = routes.pop()) !== null){
+			while(typeof (route = routes.pop()) !== "undefined"){
 				var name = this.routes[route];
 				// when we find the route we execute the preRoute
 				// with a reference to the route as a callback...
