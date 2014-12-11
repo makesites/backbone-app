@@ -49,7 +49,7 @@ var src = [
 	// third-party deps
 	'deps/backbone.easing.js',
 	'deps/backbone.analytics.js',
-	'deps/backbone.inherit.js'
+	'deps/backbone.extender.js'
 ];
 
 // - concatinate all files
