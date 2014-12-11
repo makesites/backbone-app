@@ -39,17 +39,18 @@ var name = package.name;
 //var src = libFiles();
 // - concatinate all files
 var src = [
+	// third-party helpers
+	'deps/backbone.easing.js',
+	'deps/backbone.analytics.js',
+	'deps/backbone.extender.js',
+	// main lib
 	'lib/app.helpers.js',
 	'lib/app.model.js',
 	'lib/app.collection.js',
 	'lib/app.view.js',
 	'lib/app.layout.js',
 	'lib/app.template.js',
-	'lib/app.router.js',
-	// third-party deps
-	'deps/backbone.easing.js',
-	'deps/backbone.analytics.js',
-	'deps/backbone.extender.js'
+	'lib/app.router.js'
 ];
 
 // - concatinate all files
