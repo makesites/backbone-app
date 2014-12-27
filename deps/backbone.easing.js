@@ -2,7 +2,7 @@
  * @name backbone.easing
  * A View that has an interface for easing.js tweens
  *
- * Version: 0.2.2 (Wed, 26 Nov 2014 02:33:22 GMT)
+ * Version: 0.2.2 (Sat, 27 Dec 2014 11:43:18 GMT)
  * Source: http://github.com/makesites/backbone-easing
  *
  * @author makesites
@@ -26,8 +26,8 @@
 		module.exports = lib;
 	} else {
 		// Browser globals
-		var Query = window.jQuery || window.Zepto || window.vQuery;
-		lib(Query, window._, window.Backbone, window.APP);
+		var Query = $ || jQuery || Zepto || vQuery;
+		lib(Query, _, Backbone, APP);
 	}
 }(function ($, _, Backbone, APP) {
 
