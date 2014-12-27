@@ -1,24 +1,49 @@
 /**
  * @name backbone.easing
+ * A View that has an interface for easing.js tweens
  *
- *
- * Version: 0.1.0 (Sun, 25 May 2014 05:51:42 GMT)
+ * Version: 0.2.2 (Wed, 26 Nov 2014 02:33:22 GMT)
  * Source: http://github.com/makesites/backbone-easing
  *
  * @author makesites
  * Initiated by: Makis Tracend (@tracend)
+ * Distributed through [Makesites.org](http://makesites.org)
  *
  * @cc_on Copyright © Makesites.org
- * @license MIT license
+ * @license Released under the [MIT license](http://makesites.org/licenses/MIT)
  */
 
-(function(window, $, _, Backbone, APP) {
+(function (lib) {
+
+	//"use strict";
+
+	if (typeof define === 'function' && define.amd) {
+		// AMD. Register as an anonymous module.
+		var deps = ['jquery', 'underscore', 'backbone']; // condition when backbone.app is part of the array?
+		define(deps, lib);
+	} else if ( typeof module === "object" && module && typeof module.exports === "object" ){
+		// Expose as module.exports in loaders that implement CommonJS module pattern.
+		module.exports = lib;
+	} else {
+		// Browser globals
+		var Query = window.jQuery || window.Zepto || window.vQuery;
+		lib(Query, window._, window.Backbone, window.APP);
+	}
+}(function ($, _, Backbone, APP) {
 
 	// support for Backbone APP() view if available...
-	var isAPP = ( typeof APP !== "undefined" && typeof APP.View !== "undefined" );
-	var View = ( isAPP ) ? APP.View : Backbone.View;
+	var isAPP = ( typeof APP !== "undefined" );
+	var View = ( isAPP && typeof APP.View !== "undefined" ) ? APP.View : Backbone.View;
 
 
+
+
+// Helpers
+_.mixin({
+	now: function(){
+		return ( new Date() ).getTime();
+	}
+});
 
 
 	var Easing = View.extend({
@@ -26,7 +51,7 @@
 		el : 'body',
 
 		options : {
-			targetEl: "body", // the element that will be animated
+			targetEl: window, // the element that will be animated
 			ease: "easeFrom",
 			duration: 2 // in seconds
 		},
@@ -46,7 +71,9 @@
 			this.options = _.extend({}, this.options, options );
 			this.tick = new Tick();
 			// get the target element
-			this.targetEl = $( this.options.targetEl )[0];
+			if( !this.targetEl ) {
+				this.targetEl = (typeof this.options.targetEl == "string" )? $( this.options.targetEl )[0] : this.options.targetEl;
+			}
 
 			return View.prototype.initialize.call( this, options );
 		},
@@ -117,14 +144,6 @@
 
 	});
 
-
-// Helpers
-_.mixin({
-	now: function(){
-		return ( new Date() ).getTime();
-	}
-});
-
 // --------------------------------------------------
 // easing.js v0.5.4
 // Generic set of easing functions with AMD support
@@ -138,11 +157,11 @@ _.mixin({
 // --------------------------------------------------
 (function (name, definition) {
   /*global define module*/
-  //if (typeof define == 'function') define(definition);
-  //else if (typeof module != 'undefined') module.exports = definition;
-  //else this[name] = definition;
-  window[name] = definition;
-}('easing', {
+  if (typeof define == 'function') define(name, definition);
+  else if (typeof module != 'undefined') module.exports = definition();
+  else this[name] = definition();
+}('easing', function(){
+return {
   easeInQuad: function(pos) {
     return Math.pow(pos, 2);
   },
@@ -319,6 +338,7 @@ _.mixin({
   easeTo: function(pos) {
     return Math.pow(pos,0.25);
   }
+};
 }));
 
 /* Tick.js
@@ -388,14 +408,11 @@ Tick.prototype = {
 			if( typeof item.fn !== "function") continue;
 			// restrict execution if not time yet
 			var step = (timestamp % item.interval);
-			//if( step === 0 || item.run + item.interval > timestamp) continue;
-			var asc = (step > this.queue[i].step);
-			this.queue[i].step = step; // store step
-			if( asc ) continue; // still ascending...
+			if( step === 0 || item.run + item.interval > timestamp) continue;
 			// run
 			item.fn(); // context?
-			// condition in case the item was released in the meantime...
 			// record last run
+			// condition in case the item was released in the meantime...
 			if( this.queue[i] ) this.queue[i].run = timestamp;
 		}
 	},
@@ -437,28 +454,22 @@ window.Tick = Tick;
 
 
 
-	// Support module loaders
-	if ( typeof module === "object" && module && typeof module.exports === "object" ) {
-		// Expose as module.exports in loaders that implement CommonJS module pattern.
-		module.exports = Easing;
-	} else {
-		// Register as a named AMD module, used in Require.js
-		if ( typeof define === "function" && define.amd ) {
-			define("backbone.easing", ['jquery', 'underscore', 'backbone'], function () { return Easing; } );
-		}
+	// update Backbone namespace regardless
+	Backbone.Easing = Easing;
+	if( isAPP ){
+		APP.Easing = Easing;
 	}
+
 	// If there is a window object, that at least has a document property
 	if ( typeof window === "object" && typeof window.document === "object" ) {
+		window.Backbone = Backbone;
 		// update APP namespace
 		if( isAPP ){
-			APP.Easing = Easing;
-			// save namespace
 			window.APP = APP;
 		}
-		// update Backbone namespace regardless
-		Backbone.Easing = Easing;
-		window.Backbone = Backbone;
 	}
 
+	// for module loaders:
+	return Easing;
 
-})(this.window, this.$, this._, this.Backbone, this.APP);
+}));
