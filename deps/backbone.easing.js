@@ -2,7 +2,7 @@
  * @name backbone.easing
  * A View that has an interface for easing.js tweens
  *
- * Version: 0.2.2 (Sat, 27 Dec 2014 11:43:18 GMT)
+ * Version: 0.2.2 (Sat, 27 Dec 2014 11:47:53 GMT)
  * Source: http://github.com/makesites/backbone-easing
  *
  * @author makesites
@@ -27,12 +27,13 @@
 	} else {
 		// Browser globals
 		var Query = $ || jQuery || Zepto || vQuery;
-		lib(Query, _, Backbone, APP);
+		lib(Query, _, Backbone);
 	}
-}(function ($, _, Backbone, APP) {
+}(function ($, _, Backbone) {
 
 	// support for Backbone APP() view if available...
-	var isAPP = ( typeof APP !== "undefined" );
+	var APP = APP || window.APP || false;
+	var isAPP = ( APP !== false );
 	var View = ( isAPP && typeof APP.View !== "undefined" ) ? APP.View : Backbone.View;
 
 
