@@ -31,4 +31,4 @@
     return matched;
   };
 
-})(this.window, this.Backbone);
+})(window, Backbone);

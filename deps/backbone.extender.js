@@ -48,4 +48,4 @@
 		return Class;
 	};
 
-})(this._, this.Backbone);
+})(_, Backbone);
