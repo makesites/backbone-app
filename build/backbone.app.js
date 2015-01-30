@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.7 (Sat, 27 Dec 2014 11:49:36 GMT)
+ * Version: 0.9.7 (Fri, 30 Jan 2015 06:12:23 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1537,7 +1537,8 @@ window.Tick = Tick;
 			var $el = (target.tagName != "A") ? $(target).closest("a") : $(target);
 			var url = $el.attr("href");
 			// filter some URLs
-			return ( _.isEmpty(url) || url.substr(0,1) == "#" || $el.attr("target") ) ? false : url;
+			var isLocal = ( url.substr(0,1) == "#" || (url.substr(0,2) == "/#" && window.location.pathname == "/" ) );
+			return ( _.isEmpty(url) || isLocal || $el.attr("target") ) ? false : url;
 		},
 
 		// Internal methods
