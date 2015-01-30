@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.7 (Fri, 30 Jan 2015 06:12:23 GMT)
+ * Version: 0.9.7 (Fri, 30 Jan 2015 08:20:57 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -14,7 +14,7 @@
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
 		var deps = ['jquery', 'underscore', 'backbone'];
-		define(deps, lib); // give the module a name
+		define('backbone.app', deps, lib); // give the module a name
 	} else if ( typeof module === "object" && module && typeof module.exports === "object" ){
 		// Expose as module.exports in loaders that implement CommonJS module pattern.
 		module.exports = lib;
@@ -27,7 +27,7 @@
 
 	//"use strict";
 	// better way to define global scope?
-	var window = window || {};
+	var window = this.window || {};
 	var APP = window.APP || false;
 
 	// stop processing if APP is already part of the namespace
@@ -144,10 +144,12 @@
  * @license Released under the [MIT license](http://makesites.org/licenses/MIT)
  */
 
+// Modified version - Module loaders isn't reaquired in the bundle...
+
 (function (lib) {
 
 	//"use strict";
-
+/*
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
 		var deps = ['jquery', 'underscore', 'backbone']; // condition when backbone.app is part of the array?
@@ -156,10 +158,11 @@
 		// Expose as module.exports in loaders that implement CommonJS module pattern.
 		module.exports = lib;
 	} else {
+*/
 		// Browser globals
 		var Query = $ || jQuery || Zepto || vQuery;
 		lib(Query, _, Backbone);
-	}
+//	}
 }(function ($, _, Backbone) {
 
 	// support for Backbone APP() view if available...
@@ -289,9 +292,10 @@ _.mixin({
 // --------------------------------------------------
 (function (name, definition) {
   /*global define module*/
-  if (typeof define == 'function') define(name, definition);
-  else if (typeof module != 'undefined') module.exports = definition();
-  else this[name] = definition();
+//  if (typeof define == 'function') define(name, definition);
+//  else if (typeof module != 'undefined') module.exports = definition();
+//  else
+  this[name] = definition();
 }('easing', function(){
 return {
   easeInQuad: function(pos) {
@@ -1537,7 +1541,8 @@ window.Tick = Tick;
 			var $el = (target.tagName != "A") ? $(target).closest("a") : $(target);
 			var url = $el.attr("href");
 			// filter some URLs
-			var isLocal = ( url.substr(0,1) == "#" || (url.substr(0,2) == "/#" && window.location.pathname == "/" ) );
+			// - defining local URLs
+			var isLocal = (url) ? ( url.substr(0,1) == "#" || (url.substr(0,2) == "/#" && window.location.pathname == "/" ) ) : false;
 			return ( _.isEmpty(url) || isLocal || $el.attr("target") ) ? false : url;
 		},
 
@@ -1929,6 +1934,7 @@ window.Tick = Tick;
 		// save in the global namespace
 		window.APP = APP;
 	}
+	//
 
 	// for module loaders:
 	return APP;
