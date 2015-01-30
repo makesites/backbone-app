@@ -38,6 +38,7 @@ Direct download:  [https://github.com/makesites/backbone-app/archive/master.zip]
 
 Find the compilled library in the "build/" folder. Choose between the uncompressed and comment annotated **backbone.app.js** and the minified **backbone.app-min.js**
 
+
 ## Build
 
 To build the library simply load the npm dependencies and execute the **build.js** with node:
@@ -55,4 +56,7 @@ Initiated by Makis Tracend ( [@tracend](http://github.com/tracend) )
 
 Distributed through [Makesites.org](http://makesites.org/)
 
-Released under the [MIT license](http://makesites.org/licenses/MIT)
+
+## License
+
+Released under the [Apache License v2.0](http://www.makesites.org/licenses/APACHE-2.0)
