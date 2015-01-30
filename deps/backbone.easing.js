@@ -13,10 +13,12 @@
  * @license Released under the [MIT license](http://makesites.org/licenses/MIT)
  */
 
+// Modified version - Module loaders isn't reaquired in the bundle...
+
 (function (lib) {
 
 	//"use strict";
-
+/*
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
 		var deps = ['jquery', 'underscore', 'backbone']; // condition when backbone.app is part of the array?
@@ -25,10 +27,11 @@
 		// Expose as module.exports in loaders that implement CommonJS module pattern.
 		module.exports = lib;
 	} else {
+*/
 		// Browser globals
 		var Query = $ || jQuery || Zepto || vQuery;
 		lib(Query, _, Backbone);
-	}
+//	}
 }(function ($, _, Backbone) {
 
 	// support for Backbone APP() view if available...
@@ -158,9 +161,10 @@ _.mixin({
 // --------------------------------------------------
 (function (name, definition) {
   /*global define module*/
-  if (typeof define == 'function') define(name, definition);
-  else if (typeof module != 'undefined') module.exports = definition();
-  else this[name] = definition();
+//  if (typeof define == 'function') define(name, definition);
+//  else if (typeof module != 'undefined') module.exports = definition();
+//  else
+  this[name] = definition();
 }('easing', function(){
 return {
   easeInQuad: function(pos) {
