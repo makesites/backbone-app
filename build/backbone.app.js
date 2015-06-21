@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.7 (Sun, 21 Jun 2015 09:02:40 GMT)
+ * Version: 0.9.7 (Sun, 21 Jun 2015 09:29:51 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -47,10 +47,8 @@
 		var options = arguments[0] || {};
 		var callback = arguments[1] || function(){};
 		// extend default options
-		options.require = options.require || (typeof define === 'function' && define.amd) || defaults.require;
-		options.routePath = options.routePath || defaults.routePath;
-		options.autoLookup = options.autoLookup || defaults.autoLookup;
-		options.pushState = options.pushState || defaults.pushState;
+		options.require = options.require || (typeof define === 'function' && define.amd);
+		options = utils.extend( defaults, options );
 		// find router
 		var router = false;
 		// check URIs
@@ -708,6 +706,27 @@ window.Tick = Tick;
 	};
 
 })(_, Backbone);
+var utils = {
+
+	// Common.js extend method: https://github.com/commons/common.js
+	extend: function(){
+		var objects = Array.prototype.slice.call( arguments ); // to array?
+		var destination = {};
+		for( var obj in objects ){
+			var source = objects[obj];
+			for (var property in source){
+				if (source[property] && source[property].constructor && source[property].constructor === Object) {
+					destination[property] = destination[property] || {};
+					destination[property] = arguments.callee(destination[property], source[property]);
+				} else {
+					destination[property] = source[property];
+				}
+			}
+		}
+		return destination;
+	}
+
+};
 // Underscore
 (function(_, Backbone, $) {
 
