@@ -44,6 +44,7 @@ var src = [
 	'deps/backbone.analytics.js',
 	'deps/backbone.extender.js',
 	// main lib
+	'lib/utils.js',
 	'lib/app.helpers.js',
 	'lib/app.model.js',
 	'lib/app.collection.js',
