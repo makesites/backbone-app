@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.7 (Sun, 21 Jun 2015 09:29:51 GMT)
+ * Version: 0.9.8 (Fri, 18 Sep 2015 11:16:46 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1106,6 +1106,14 @@ var utils = {
 
 })(_, Backbone, APP);
 (function(_, Backbone, $, APP) {
+	// containers
+	var state = Backbone.View.prototype.state || new Backbone.Model();
+	// defaults
+	state.set({
+		loaded : false,
+		scroll : false,
+		visible : false
+	});
 
 	APP.View =  Backbone.View.extend({
 		options : {
@@ -1130,11 +1138,9 @@ var utils = {
 		states: {
 			"scroll": "_scroll"
 		},
-		state: {
-			loaded : false,
-			scroll : false,
-			visible : false
-		},
+
+		state: state,
+
 		initialize: function( options ){
 			var self = this;
 			// fallback
@@ -1145,6 +1151,7 @@ var utils = {
 			$(this.el).unbind();
 			//
 			_.bindAll(this, 'render', 'clickExternal', 'postRender', '_url', '_toJSON');
+			if( typeof this.url == "function" ) _.bindAll(this, 'url');
 			// #73 - optionally saving options
 			if( this.options.saveOptions ) this.options = _.extend(this.options, options);
 			// find the data
@@ -1330,7 +1337,7 @@ var utils = {
 			if( !this.options.data || (this.options.data && !_.isEmpty(this._toJSON()) ) ){
 				$(this.el).removeClass("loading");
 				// set the appropriate flag
-				this.state.loaded = true;
+				this.state.set("loaded", true);
 				// bubble up the event
 				this.trigger("loaded");
 			}
@@ -1412,7 +1419,7 @@ var utils = {
 
 		//
 		_scroll: function () {
-			//this.state.scroll = true;
+			//this.state.set("scroll", true);
 		},
 		// checks if the view is visible
 		isVisible: function(){
@@ -1433,13 +1440,13 @@ var utils = {
 			// condition
 			var visible = ( (elementOffset.top >= minTop && elementOffset.top < maxTop) && (elementOffset.left >= minLeft && elementOffset.left < maxLeft) );
 			// trigger state if needed
-			if( visible && !this.state.visible ){
+			if( visible && !this.state.get("visible") ){
 				this.trigger("visible");
 			} else {
 				this.trigger("hidden");
 			}
 			// save state for later...
-			this.state.visible = visible;
+			this.state.set("visible", visible);
 
 			return visible;
 		}
@@ -1787,7 +1794,7 @@ var utils = {
 			ram: function(){
 				return (console.memory) ? Math.round( 100 * (console.memory.usedJSHeapSize / console.memory.totalJSHeapSize)) : 0;
 			},
-			standalone: function(){ return (("standalone" in window.navigator) && window.navigator.standalone) || (typeof PhoneGap !="undefined" && !_.isUndefined(PhoneGap.env) && PhoneGap.env.app ); },
+			standalone: function(){ return (("standalone" in navigator) && navigator.standalone) || (typeof PhoneGap !="undefined" && !_.isUndefined(PhoneGap.env) && PhoneGap.env.app ) || ((typeof external != "undefined") && external.msIsSiteMode()); },
 			framed: (top !== self) // alternatively (window.top !== window)
 		},
 		update: function(){
