@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.8 (Fri, 18 Sep 2015 11:16:46 GMT)
+ * Version: 0.9.8 (Sun, 01 Nov 2015 00:31:32 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1794,7 +1794,7 @@ var utils = {
 			ram: function(){
 				return (console.memory) ? Math.round( 100 * (console.memory.usedJSHeapSize / console.memory.totalJSHeapSize)) : 0;
 			},
-			standalone: function(){ return (("standalone" in navigator) && navigator.standalone) || (typeof PhoneGap !="undefined" && !_.isUndefined(PhoneGap.env) && PhoneGap.env.app ) || ((typeof external != "undefined") && external.msIsSiteMode()); },
+			standalone: function(){ return (("standalone" in navigator) && navigator.standalone) || (typeof PhoneGap !="undefined" && !_.isUndefined(PhoneGap.env) && PhoneGap.env.app ) || ((typeof external != "undefined") && (typeof external.msIsSiteMode == "function") && external.msIsSiteMode()); },
 			framed: (top !== self) // alternatively (window.top !== window)
 		},
 		update: function(){
