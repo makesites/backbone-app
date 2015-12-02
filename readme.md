@@ -20,6 +20,7 @@ The APP() includes methods that connect it to:
 
 Also encapsulates a number of snippets, like:
 
+* [Backbone Easing](https://github.com/makesites/backbone-easing)
 * [Backbone Extender](https://gist.github.com/tracend/5425415)
 * [Backbone.Ready](https://gist.github.com/tracend/5617079)
 * [Backbone.Analytics](https://github.com/kendagriff/backbone.analytics)
