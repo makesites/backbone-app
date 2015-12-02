@@ -36,12 +36,19 @@
 		// loop through classes
 		for( var i in classes ){
 			var Child = classes[i];
+			//var Parent = Class.extend({}); // clone...
 			var Parent = Class;
 
-			var methods = ( Child.prototype ) ? Child.prototype : Child;
+			var proto = ( Child.prototype ) ? Child.prototype : Child;
 			// only object accepted (lookup instance of Backbone...?)
-			if(typeof methods !== "object" ) continue;
-
+			if(typeof proto !== "object" ) continue;
+			// clone methods
+			//var methods = Object.create( proto ); // why not working??
+			var methods = _.extend({}, proto);
+			// FIX delete old parent reference
+			delete methods._parent;
+			// save reference to parent class
+			methods._parent = Parent; // add this only if not the final loop
 			// extend parent
 			Class = Parent.extend( methods );
 		}
