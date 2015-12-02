@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.8 (Sun, 01 Nov 2015 00:31:32 GMT)
+ * Version: 0.9.8 (Wed, 02 Dec 2015 05:01:24 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -693,12 +693,19 @@ window.Tick = Tick;
 		// loop through classes
 		for( var i in classes ){
 			var Child = classes[i];
+			//var Parent = Class.extend({}); // clone...
 			var Parent = Class;
 
-			var methods = ( Child.prototype ) ? Child.prototype : Child;
+			var proto = ( Child.prototype ) ? Child.prototype : Child;
 			// only object accepted (lookup instance of Backbone...?)
-			if(typeof methods !== "object" ) continue;
-
+			if(typeof proto !== "object" ) continue;
+			// clone methods
+			//var methods = Object.create( proto ); // why not working??
+			var methods = _.extend({}, proto);
+			// FIX delete old parent reference
+			delete methods._parent;
+			// save reference to parent class
+			methods._parent = Parent; // add this only if not the final loop
 			// extend parent
 			Class = Parent.extend( methods );
 		}
@@ -706,6 +713,7 @@ window.Tick = Tick;
 	};
 
 })(_, Backbone);
+
 var utils = {
 
 	// Common.js extend method: https://github.com/commons/common.js
@@ -1310,6 +1318,33 @@ var utils = {
 			var data = this._toJSON();
 			// #43 - adding options to the template data
 			return ( this.options.inRender ) ? { data : data, options: this.options } : data;
+		},
+
+		// Helpers
+
+		// call methods from the parent
+		parent: function( method, options ){
+			// fallbacks
+			method = method || "";
+			options = options || {};
+			// prerequisites
+			this.__inherit = this.__inherit || []; // use promises instead?
+			// check what reference of the parent we have available
+			// - first is to stop recursion, second is to support for Backbone.APP
+			var parent = this.__inherit[method] || this._parent || {};
+			// fallback to pure js inheritance
+			var proto = parent.prototype || this.__proto__.constructor.__super__; // last MUST exist...
+			// else View.__super__ ?
+			var fn = proto[method] || function(){
+				// reset inheritance
+				delete this.__inherit[method];
+			}; // fallback necessary?
+			// convert arguments to an array
+			var args = (options instanceof Array) ? options: [options];
+			// stop recursion by saving a reference to the next parent
+			this.__inherit[method] = proto._parent || function(){};
+			//
+			return fn.apply(this, args);
 		},
 
 		// Internal methods
