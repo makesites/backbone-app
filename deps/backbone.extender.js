@@ -10,12 +10,13 @@
 
 		var parent = this;
 
+
 		if (protoProps){
 			_.each(protoProps, function(value, key){
 				// exit now if the types can't be extended
 				if( typeof value == "string" || typeof value == "boolean" ) return;
 				// modify only the objects that are available in the parent
-				if( key in parent.prototype && !(value instanceof Function) && !(parent.prototype[key] instanceof Function) ){
+				if( key in parent.prototype && !(value instanceof Function) && !(parent.prototype[key] instanceof Function) && !(value instanceof Backbone.Model) && !(parent.prototype[key] instanceof Backbone.Model) && !(value instanceof Backbone.Collection) && !(parent.prototype[key] instanceof Backbone.Collection) ){
 					protoProps[key] = _.extend({}, parent.prototype[key], value);
 				}
 			});

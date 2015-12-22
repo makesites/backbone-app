@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.8 (Wed, 02 Dec 2015 05:29:54 GMT)
+ * Version: 0.9.8 (Tue, 22 Dec 2015 04:59:56 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -670,12 +670,13 @@ window.Tick = Tick;
 
 		var parent = this;
 
+
 		if (protoProps){
 			_.each(protoProps, function(value, key){
 				// exit now if the types can't be extended
 				if( typeof value == "string" || typeof value == "boolean" ) return;
 				// modify only the objects that are available in the parent
-				if( key in parent.prototype && !(value instanceof Function) && !(parent.prototype[key] instanceof Function) ){
+				if( key in parent.prototype && !(value instanceof Function) && !(parent.prototype[key] instanceof Function) && !(value instanceof Backbone.Model) && !(parent.prototype[key] instanceof Backbone.Model) && !(value instanceof Backbone.Collection) && !(parent.prototype[key] instanceof Backbone.Collection) ){
 					protoProps[key] = _.extend({}, parent.prototype[key], value);
 				}
 			});
