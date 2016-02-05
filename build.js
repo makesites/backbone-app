@@ -110,6 +110,9 @@ function minify(srcPath, distPath) {
 	var min = uglify.minify(srcPath, { compressor: {
 		comments : /@name|@author|@cc_on|@url|@license/
 	} });
+	
+	// disable gzip
+	return fs.writeFileSync(distPath, min.code, FILE_ENCODING);
 
 	// gzip
 	zlib.gzip(min.code, function (error, result) {
