@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.8 (Tue, 22 Dec 2015 04:59:56 GMT)
+ * Version: 0.9.8 (Fri, 05 Feb 2016 02:37:32 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1234,7 +1234,7 @@ var utils = {
 			// execute pre-render actions
 			this._preRender();
 			//
-			var template = ( this.options.type ) ? this.template.get( this.options.type ) : this.template;
+			var template = this._getTemplate();
 			var data = this.toJSON();
 			// #19 - checking instance of template before executing as a function
 			var html = ( template instanceof Function ) ? template( data ) : template;
@@ -1355,7 +1355,8 @@ var utils = {
 
 		_initRender: function(){
 			if( !this.options.autoRender ) return false;
-			var hasMarkup = (this.options.html || this.options.url );
+			var template = this._getTemplate();
+			var hasMarkup = (this.options.html || ( this.options.url && template ) );
 			var hasData = (this.options.data && ( _.isUndefined( this.data.toJSON ) || ( !_.isUndefined( this.data.toJSON ) && !_.isEmpty(this.data.toJSON()))));
 			// if there's markup and no data, render
 			if( hasMarkup && !this.options.data) return true;
@@ -1389,6 +1390,10 @@ var utils = {
 			if( !this.options.data ) return {};
 			if( this.data.toJSON ) return this.data.toJSON();
 			return this.data; // in case the data is a JSON...
+		},
+
+		_getTemplate: function(){
+			return ( this.options.type ) ? this.template.get( this.options.type ) : this.template;
 		},
 
 		// - container is defined in three ways
