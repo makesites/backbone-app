@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.8 (Fri, 05 Feb 2016 02:37:32 GMT)
+ * Version: 0.9.8 (Fri, 05 Feb 2016 02:44:48 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1355,13 +1355,16 @@ var utils = {
 
 		_initRender: function(){
 			if( !this.options.autoRender ) return false;
+			// variables
 			var template = this._getTemplate();
 			var hasMarkup = (this.options.html || ( this.options.url && template ) );
 			var hasData = (this.options.data && ( _.isUndefined( this.data.toJSON ) || ( !_.isUndefined( this.data.toJSON ) && !_.isEmpty(this.data.toJSON()))));
-			// if there's markup and no data, render
+			// if there's data and markup available, render
+			if( hasMarkup && hasData ) return true;
+			// if there's only one or the other render
 			if( hasMarkup && !this.options.data) return true;
-			// if there's data and data is available, render
-			if( hasData ) return true;
+			if( hasData && !this.options.url ) return true;
+			// in all other cases, don't render
 			return false;
 		},
 
