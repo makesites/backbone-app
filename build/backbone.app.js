@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.8 (Fri, 05 Feb 2016 02:44:48 GMT)
+ * Version: 0.9.8 (Sat, 09 Apr 2016 06:50:41 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -95,16 +95,16 @@
 			} else {
 
 				// assuming System.js
-				System.import(router).then(function( Controller ){
+				System['import'](router).then(function( Controller ){
 
-					if( Controller.default ){
-						callback( Controller.default );
+					if( Controller['default'] ){
+						callback( Controller['default'] );
 					}
 
-				}).catch(function(e) {
+				})['catch'](function(e) {
 					// revert to the default router
-					System.import(routerDefault).then(function( Controller ){
-						callback( Controller.default );
+					System['import'](routerDefault).then(function( Controller ){
+						callback( Controller['default'] );
 					});
 				});
 
@@ -1337,7 +1337,7 @@ var utils = {
 			// - first is to stop recursion, second is to support for Backbone.APP
 			var parent = this.__inherit[method] || this._parent || {};
 			// fallback to pure js inheritance
-			var proto = parent.prototype || this.__proto__.constructor.__super__; // last MUST exist...
+			var proto = parent.prototype || (Object.getPrototypeOf(this)).constructor.__super__; // last MUST exist...
 			// else View.__super__ ?
 			var fn = proto[method] || function(){
 				// reset inheritance
@@ -1442,9 +1442,9 @@ var utils = {
 			if( exists ) return true;
 			// el not in parent el
 			if( this.options.parentPrepend ){
-				$(this.options.parentEl).prepend( $el );
+				$(parent).prepend( $el );
 			} else {
-				$(this.options.parentEl).append( $el );
+				$(parent).append( $el );
 			}
 		},
 
@@ -1785,8 +1785,10 @@ var utils = {
 	APP.Router = Backbone.Router.extend({
 		// app configuration:
 		options: {
-			location : false,
 			api : false,
+			autostart: true,
+			location : false,
+			pushState: false,
 			p404 : "/"
 		},
 		// to preserve these routes, extend with:
@@ -1810,7 +1812,8 @@ var utils = {
 			_.extend( this.options, options);
 			// setup app
 			this._setup();
-			//
+			// update Backbone options
+			if( this.options.autostart ) Backbone.history.start({ pushState: this.options.pushState });
 		},
 
 		// Save app state in a seperate object
