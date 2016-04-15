@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.8 (Sat, 09 Apr 2016 06:50:41 GMT)
+ * Version: 0.9.8 (Fri, 15 Apr 2016 23:32:33 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1162,7 +1162,7 @@ var utils = {
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
 			//
-			_.bindAll(this, 'render', 'clickExternal', 'postRender', '_url', '_toJSON');
+			_.bindAll(this, 'render', 'clickExternal', 'postRender', '_url', '_inDOM', '_toJSON');
 			if( typeof this.url == "function" ) _.bindAll(this, 'url');
 			// #73 - optionally saving options
 			if( this.options.saveOptions ) this.options = _.extend(this.options, options);
