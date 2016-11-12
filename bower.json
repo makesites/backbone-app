@@ -1,0 +1,10 @@
+{
+	"name": "backbone.app",
+	"version": "0.9.8",
+	"main": ["./build/backbone.app-min.js"],
+	"dependencies": {
+		"backbone": "1.1.2",
+		"jquery": ">=2.1.4",
+		"underscore": ">=1.8.3"
+	}
+}
