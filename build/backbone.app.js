@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.8 (Fri, 15 Apr 2016 23:32:33 GMT)
+ * Version: 0.9.9 (Sat, 12 Nov 2016 18:12:45 GMT)
  * @license Apache License, Version 2.0
  */
 
