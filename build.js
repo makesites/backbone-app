@@ -107,17 +107,20 @@ function minify(srcPath, distPath) {
 	ast = pro.ast_squeeze(ast);
 	*/
 
-	var min = uglify.minify(srcPath, { compressor: {
-		comments : /@name|@author|@cc_on|@url|@license/
-	} });
-	
+	var result = uglify.minify(srcPath, {
+		mangle: true,
+		output: {
+			comments : /@name|@author|@cc_on|@url|@license/
+		}
+	});
+
 	// disable gzip
-	return fs.writeFileSync(distPath, min.code, FILE_ENCODING);
+	return fs.writeFileSync(distPath, result.code, FILE_ENCODING);
 
 	// gzip
-	zlib.gzip(min.code, function (error, result) {
+	zlib.gzip(result.code, function (error, bytes) {
 		if (error) throw error;
-		fs.writeFileSync(distPath, result, FILE_ENCODING);
+		fs.writeFileSync(distPath, bytes, FILE_ENCODING);
 		console.log(' '+ distPath +' built.');
 	});
 
