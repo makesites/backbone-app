@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.9 (Wed, 07 Dec 2016 12:59:06 GMT)
+ * Version: 0.9.9 (Fri, 09 Dec 2016 11:12:28 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1854,6 +1854,9 @@ var utils = {
 			browser: function(){
 				if( /chrome/.test(navigator.userAgent.toLowerCase()) ) return 'chrome';
 				if( /firefox/.test(navigator.userAgent.toLowerCase()) ) return 'firefox';
+				if( /safari/.test(navigator.userAgent.toLowerCase()) ) return 'safari';
+				if (navigator.appName == 'Microsoft Internet Explorer') return 'ie';
+				if( /android/.test(navigator.userAgent.toLowerCase()) ) return 'android';
 				if(/(iPhone|iPod).*OS 5.*AppleWebKit.*Mobile.*Safari/.test(navigator.userAgent) ) return 'ios';
 				return 'other';
 			},
@@ -2046,6 +2049,9 @@ var utils = {
 
 })(_, Backbone, APP);
 
+
+	// reference other Backbone methods
+	APP.extend = Backbone.extend;
 
 	// If there is a window object, that at least has a document property
 	if( typeof window === "object" && typeof window.document === "object" ){
