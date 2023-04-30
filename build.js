@@ -107,7 +107,9 @@ function minify(srcPath, distPath) {
 	ast = pro.ast_squeeze(ast);
 	*/
 
-	var result = uglify.minify(srcPath, {
+	var source = fs.readFileSync(srcPath, FILE_ENCODING);
+
+	var result = uglify.minify(source, {
 		mangle: true,
 		output: {
 			comments : /@name|@author|@cc_on|@url|@license/
