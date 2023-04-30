@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.9 (Fri, 09 Dec 2016 11:12:28 GMT)
+ * Version: 0.9.9 (Sun, 30 Apr 2023 20:57:03 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -304,189 +304,189 @@ _.mixin({
 // https://raw.github.com/danro/easing-js/master/LICENSE
 // --------------------------------------------------
 (function (name, definition) {
-  /*global define module*/
-  if (typeof define == 'function') define(name, definition);
-  else if (typeof module != 'undefined') module.exports = definition();
-  // always expose methods locally
-  this[name] = definition();
+	/*global define module*/
+	if (typeof define == 'function') define(name, definition);
+	else if (typeof module != 'undefined') module.exports = definition();
+	// always expose methods locally
+	this[name] = definition();
 }('easing', function(){
 return {
-  easeInQuad: function(pos) {
-    return Math.pow(pos, 2);
-  },
+	easeInQuad: function(pos) {
+		return Math.pow(pos, 2);
+	},
 
-  easeOutQuad: function(pos) {
-    return -(Math.pow((pos-1), 2) -1);
-  },
+	easeOutQuad: function(pos) {
+		return -(Math.pow((pos-1), 2) -1);
+	},
 
-  easeInOutQuad: function(pos) {
-    if ((pos/=0.5) < 1) return 0.5*Math.pow(pos,2);
-    return -0.5 * ((pos-=2)*pos - 2);
-  },
+	easeInOutQuad: function(pos) {
+		if ((pos/=0.5) < 1) return 0.5*Math.pow(pos,2);
+		return -0.5 * ((pos-=2)*pos - 2);
+	},
 
-  easeInCubic: function(pos) {
-    return Math.pow(pos, 3);
-  },
+	easeInCubic: function(pos) {
+		return Math.pow(pos, 3);
+	},
 
-  easeOutCubic: function(pos) {
-    return (Math.pow((pos-1), 3) +1);
-  },
+	easeOutCubic: function(pos) {
+		return (Math.pow((pos-1), 3) +1);
+	},
 
-  easeInOutCubic: function(pos) {
-    if ((pos/=0.5) < 1) return 0.5*Math.pow(pos,3);
-    return 0.5 * (Math.pow((pos-2),3) + 2);
-  },
+	easeInOutCubic: function(pos) {
+		if ((pos/=0.5) < 1) return 0.5*Math.pow(pos,3);
+		return 0.5 * (Math.pow((pos-2),3) + 2);
+	},
 
-  easeInQuart: function(pos) {
-    return Math.pow(pos, 4);
-  },
+	easeInQuart: function(pos) {
+		return Math.pow(pos, 4);
+	},
 
-  easeOutQuart: function(pos) {
-    return -(Math.pow((pos-1), 4) -1);
-  },
+	easeOutQuart: function(pos) {
+		return -(Math.pow((pos-1), 4) -1);
+	},
 
-  easeInOutQuart: function(pos) {
-    if ((pos/=0.5) < 1) return 0.5*Math.pow(pos,4);
-    return -0.5 * ((pos-=2)*Math.pow(pos,3) - 2);
-  },
+	easeInOutQuart: function(pos) {
+		if ((pos/=0.5) < 1) return 0.5*Math.pow(pos,4);
+		return -0.5 * ((pos-=2)*Math.pow(pos,3) - 2);
+	},
 
-  easeInQuint: function(pos) {
-    return Math.pow(pos, 5);
-  },
+	easeInQuint: function(pos) {
+		return Math.pow(pos, 5);
+	},
 
-  easeOutQuint: function(pos) {
-    return (Math.pow((pos-1), 5) +1);
-  },
+	easeOutQuint: function(pos) {
+		return (Math.pow((pos-1), 5) +1);
+	},
 
-  easeInOutQuint: function(pos) {
-    if ((pos/=0.5) < 1) return 0.5*Math.pow(pos,5);
-    return 0.5 * (Math.pow((pos-2),5) + 2);
-  },
+	easeInOutQuint: function(pos) {
+		if ((pos/=0.5) < 1) return 0.5*Math.pow(pos,5);
+		return 0.5 * (Math.pow((pos-2),5) + 2);
+	},
 
-  easeInSine: function(pos) {
-    return -Math.cos(pos * (Math.PI/2)) + 1;
-  },
+	easeInSine: function(pos) {
+		return -Math.cos(pos * (Math.PI/2)) + 1;
+	},
 
-  easeOutSine: function(pos) {
-    return Math.sin(pos * (Math.PI/2));
-  },
+	easeOutSine: function(pos) {
+		return Math.sin(pos * (Math.PI/2));
+	},
 
-  easeInOutSine: function(pos) {
-    return (-0.5 * (Math.cos(Math.PI*pos) -1));
-  },
+	easeInOutSine: function(pos) {
+		return (-0.5 * (Math.cos(Math.PI*pos) -1));
+	},
 
-  easeInExpo: function(pos) {
-    return (pos===0) ? 0 : Math.pow(2, 10 * (pos - 1));
-  },
+	easeInExpo: function(pos) {
+		return (pos===0) ? 0 : Math.pow(2, 10 * (pos - 1));
+	},
 
-  easeOutExpo: function(pos) {
-    return (pos===1) ? 1 : -Math.pow(2, -10 * pos) + 1;
-  },
+	easeOutExpo: function(pos) {
+		return (pos===1) ? 1 : -Math.pow(2, -10 * pos) + 1;
+	},
 
-  easeInOutExpo: function(pos) {
-    if(pos===0) return 0;
-    if(pos===1) return 1;
-    if((pos/=0.5) < 1) return 0.5 * Math.pow(2,10 * (pos-1));
-    return 0.5 * (-Math.pow(2, -10 * --pos) + 2);
-  },
+	easeInOutExpo: function(pos) {
+		if(pos===0) return 0;
+		if(pos===1) return 1;
+		if((pos/=0.5) < 1) return 0.5 * Math.pow(2,10 * (pos-1));
+		return 0.5 * (-Math.pow(2, -10 * --pos) + 2);
+	},
 
-  easeInCirc: function(pos) {
-    return -(Math.sqrt(1 - (pos*pos)) - 1);
-  },
+	easeInCirc: function(pos) {
+		return -(Math.sqrt(1 - (pos*pos)) - 1);
+	},
 
-  easeOutCirc: function(pos) {
-    return Math.sqrt(1 - Math.pow((pos-1), 2));
-  },
+	easeOutCirc: function(pos) {
+		return Math.sqrt(1 - Math.pow((pos-1), 2));
+	},
 
-  easeInOutCirc: function(pos) {
-    if((pos/=0.5) < 1) return -0.5 * (Math.sqrt(1 - pos*pos) - 1);
-    return 0.5 * (Math.sqrt(1 - (pos-=2)*pos) + 1);
-  },
+	easeInOutCirc: function(pos) {
+		if((pos/=0.5) < 1) return -0.5 * (Math.sqrt(1 - pos*pos) - 1);
+		return 0.5 * (Math.sqrt(1 - (pos-=2)*pos) + 1);
+	},
 
-  easeOutBounce: function(pos) {
-    if ((pos) < (1/2.75)) {
-      return (7.5625*pos*pos);
-    } else if (pos < (2/2.75)) {
-      return (7.5625*(pos-=(1.5/2.75))*pos + 0.75);
-    } else if (pos < (2.5/2.75)) {
-      return (7.5625*(pos-=(2.25/2.75))*pos + 0.9375);
-    } else {
-      return (7.5625*(pos-=(2.625/2.75))*pos + 0.984375);
-    }
-  },
+	easeOutBounce: function(pos) {
+		if ((pos) < (1/2.75)) {
+			return (7.5625*pos*pos);
+		} else if (pos < (2/2.75)) {
+			return (7.5625*(pos-=(1.5/2.75))*pos + 0.75);
+		} else if (pos < (2.5/2.75)) {
+			return (7.5625*(pos-=(2.25/2.75))*pos + 0.9375);
+		} else {
+			return (7.5625*(pos-=(2.625/2.75))*pos + 0.984375);
+		}
+	},
 
-  easeInBack: function(pos) {
-    var s = 1.70158;
-    return (pos)*pos*((s+1)*pos - s);
-  },
+	easeInBack: function(pos) {
+		var s = 1.70158;
+		return (pos)*pos*((s+1)*pos - s);
+	},
 
-  easeOutBack: function(pos) {
-    var s = 1.70158;
-    return (pos=pos-1)*pos*((s+1)*pos + s) + 1;
-  },
+	easeOutBack: function(pos) {
+		var s = 1.70158;
+		return (pos=pos-1)*pos*((s+1)*pos + s) + 1;
+	},
 
-  easeInOutBack: function(pos) {
-    var s = 1.70158;
-    if((pos/=0.5) < 1) return 0.5*(pos*pos*(((s*=(1.525))+1)*pos -s));
-    return 0.5*((pos-=2)*pos*(((s*=(1.525))+1)*pos +s) +2);
-  },
+	easeInOutBack: function(pos) {
+		var s = 1.70158;
+		if((pos/=0.5) < 1) return 0.5*(pos*pos*(((s*=(1.525))+1)*pos -s));
+		return 0.5*((pos-=2)*pos*(((s*=(1.525))+1)*pos +s) +2);
+	},
 
-  elastic: function(pos) {
-    return -1 * Math.pow(4,-8*pos) * Math.sin((pos*6-1)*(2*Math.PI)/2) + 1;
-  },
+	elastic: function(pos) {
+		return -1 * Math.pow(4,-8*pos) * Math.sin((pos*6-1)*(2*Math.PI)/2) + 1;
+	},
 
-  swingFromTo: function(pos) {
-    var s = 1.70158;
-    return ((pos/=0.5) < 1) ? 0.5*(pos*pos*(((s*=(1.525))+1)*pos - s)) :
-    0.5*((pos-=2)*pos*(((s*=(1.525))+1)*pos + s) + 2);
-  },
+	swingFromTo: function(pos) {
+		var s = 1.70158;
+		return ((pos/=0.5) < 1) ? 0.5*(pos*pos*(((s*=(1.525))+1)*pos - s)) :
+		0.5*((pos-=2)*pos*(((s*=(1.525))+1)*pos + s) + 2);
+	},
 
-  swingFrom: function(pos) {
-    var s = 1.70158;
-    return pos*pos*((s+1)*pos - s);
-  },
+	swingFrom: function(pos) {
+		var s = 1.70158;
+		return pos*pos*((s+1)*pos - s);
+	},
 
-  swingTo: function(pos) {
-    var s = 1.70158;
-    return (pos-=1)*pos*((s+1)*pos + s) + 1;
-  },
+	swingTo: function(pos) {
+		var s = 1.70158;
+		return (pos-=1)*pos*((s+1)*pos + s) + 1;
+	},
 
-  bounce: function(pos) {
-    if (pos < (1/2.75)) {
-      return (7.5625*pos*pos);
-    } else if (pos < (2/2.75)) {
-      return (7.5625*(pos-=(1.5/2.75))*pos + 0.75);
-    } else if (pos < (2.5/2.75)) {
-      return (7.5625*(pos-=(2.25/2.75))*pos + 0.9375);
-    } else {
-      return (7.5625*(pos-=(2.625/2.75))*pos + 0.984375);
-    }
-  },
+	bounce: function(pos) {
+		if (pos < (1/2.75)) {
+			return (7.5625*pos*pos);
+		} else if (pos < (2/2.75)) {
+			return (7.5625*(pos-=(1.5/2.75))*pos + 0.75);
+		} else if (pos < (2.5/2.75)) {
+			return (7.5625*(pos-=(2.25/2.75))*pos + 0.9375);
+		} else {
+			return (7.5625*(pos-=(2.625/2.75))*pos + 0.984375);
+		}
+	},
 
-  bouncePast: function(pos) {
-    if (pos < (1/2.75)) {
-      return (7.5625*pos*pos);
-    } else if (pos < (2/2.75)) {
-      return 2 - (7.5625*(pos-=(1.5/2.75))*pos + 0.75);
-    } else if (pos < (2.5/2.75)) {
-      return 2 - (7.5625*(pos-=(2.25/2.75))*pos + 0.9375);
-    } else {
-      return 2 - (7.5625*(pos-=(2.625/2.75))*pos + 0.984375);
-    }
-  },
+	bouncePast: function(pos) {
+		if (pos < (1/2.75)) {
+			return (7.5625*pos*pos);
+		} else if (pos < (2/2.75)) {
+			return 2 - (7.5625*(pos-=(1.5/2.75))*pos + 0.75);
+		} else if (pos < (2.5/2.75)) {
+			return 2 - (7.5625*(pos-=(2.25/2.75))*pos + 0.9375);
+		} else {
+			return 2 - (7.5625*(pos-=(2.625/2.75))*pos + 0.984375);
+		}
+	},
 
-  easeFromTo: function(pos) {
-    if ((pos/=0.5) < 1) return 0.5*Math.pow(pos,4);
-    return -0.5 * ((pos-=2)*Math.pow(pos,3) - 2);
-  },
+	easeFromTo: function(pos) {
+		if ((pos/=0.5) < 1) return 0.5*Math.pow(pos,4);
+		return -0.5 * ((pos-=2)*Math.pow(pos,3) - 2);
+	},
 
-  easeFrom: function(pos) {
-    return Math.pow(pos,4);
-  },
+	easeFrom: function(pos) {
+		return Math.pow(pos,4);
+	},
 
-  easeTo: function(pos) {
-    return Math.pow(pos,0.25);
-  }
+	easeTo: function(pos) {
+		return Math.pow(pos,0.25);
+	}
 };
 }));
 
@@ -1192,13 +1192,17 @@ var utils = {
 			// #12 : unbind this container from any previous listeners
 			$(this.el).unbind();
 			//
-			_.bindAll(this, 'render', 'clickExternal', 'postRender', '_url', '_inDOM', '_toJSON');
+			_.bindAll(this, 'render', 'clickExternal', 'postRender', 'onLoaded', '_url', '_inDOM', '_toJSON', '_onLoaded');
 			if( typeof this.url == "function" ) _.bindAll(this, 'url');
 			// #73 - optionally saving options
 			if( this.options.saveOptions ) this.options = _.extend(this.options, options);
 			// find the data
 			this.data = this.data || this.model || this.collection || null;
 			this.options.data  = !_.isNull( this.data );
+			//
+			this.on('loaded', this.onLoaded );
+			this.on('loaded', this._onLoaded );
+
 
 			// #9 optionally add a reference to the view in the container
 			if( this.options.attr ) {
@@ -1239,6 +1243,8 @@ var utils = {
 			// #11 : initial render only if data is not empty (or there are no data)
 			if( this._initRender() ){
 				this.render();
+			} else {
+				this.trigger("loaded");
 			}
 			// #36 - Adding resize event
 			$(window).bind("resize", _.bind(this._resize, this));
@@ -1354,6 +1360,9 @@ var utils = {
 			return ( this.options.inRender ) ? { data : data, options: this.options } : data;
 		},
 
+		onLoaded: function(){
+			// replace with your own actions on load
+		},
 		// Helpers
 
 		// call methods from the parent
@@ -1427,6 +1436,10 @@ var utils = {
 
 		_getTemplate: function(){
 			return ( this.options.type ) ? this.template.get( this.options.type ) : this.template;
+		},
+
+		_onLoaded: function(){
+			this.setElement( this.el );
 		},
 
 		// - container is defined in three ways
