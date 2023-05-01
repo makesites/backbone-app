@@ -2,7 +2,7 @@
  * @name backbone.app
  * @author makesites
  * Homepage: http://github.com/makesites/backbone-app
- * Version: 0.9.9 (Sun, 30 Apr 2023 20:57:03 GMT)
+ * Version: 1.0.0 (Mon, 01 May 2023 01:46:44 GMT)
  * @license Apache License, Version 2.0
  */
 
@@ -1871,10 +1871,12 @@ var utils = {
 				if (navigator.appName == 'Microsoft Internet Explorer') return 'ie';
 				if( /android/.test(navigator.userAgent.toLowerCase()) ) return 'android';
 				if(/(iPhone|iPod).*OS 5.*AppleWebKit.*Mobile.*Safari/.test(navigator.userAgent) ) return 'ios';
+				if (navigator.userAgent.indexOf("Opera Mini") !== -1) return 'opera-mini';
 				return 'other';
 			},
 			mobile: (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) ||navigator.userAgent.match(/BlackBerry/i)),
 			ipad: (navigator.userAgent.match(/iPad/i) !== null),
+			retina: (window.retina || window.devicePixelRatio > 1),
 			// check if there's a touch screen
 			touch : ('ontouchstart' in document.documentElement),
 			pushstate: function() {
