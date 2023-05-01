@@ -1,5 +1,5 @@
 {
-	"name" : "backbone.app",
+	"name" : "@makesites/backbone.app",
 	"version" : "1.0.0",
 	"author": "makesites",
 	"homepage" : "http://github.com/makesites/backbone-app",

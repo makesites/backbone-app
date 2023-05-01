@@ -29,10 +29,10 @@ Also encapsulates a number of snippets, like:
 
 ## Install
 
-Using bower:
+Using npm:
 
 ```
-bower install backbone.app
+npm install @makesites/backbone.app
 ```
 
 Direct download:  [https://github.com/makesites/backbone-app/archive/master.zip](https://github.com/makesites/backbone-app/archive/master.zip)
